@@ -127,27 +127,21 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
-        /* Dashboard Controls - Forced single line */
+        /* Dashboard Controls - Diatur ulang menjadi Grid Lebar Penuh sepadan dengan KPI Cards */
         .dashboard-controls {
             background: white;
-            padding: 0.75rem 2.5rem;
+            padding: 1rem 2rem; /* Diselaraskan dengan padding 2rem milik .kpi-row agar tepi kiri-kanan sejajar sempurna */
             margin: 0;
             border-bottom: 1px solid #edf2f7;
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Membagi 5 kolom filter secara merata otomatis */
             gap: 15px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
         }
-
-        .dashboard-controls::-webkit-scrollbar { display: none; }
-        .dashboard-controls { -ms-overflow-style: none; scrollbar-width: none; }
 
         .control-item {
             display: flex;
             flex-direction: column;
             gap: 2px;
-            flex-shrink: 0;
         }
 
         .control-label {
@@ -168,6 +162,7 @@
             color: var(--text-main);
             background-color: #f8fafc;
             cursor: pointer;
+            width: 100%; /* Memaksa drop-down memenuhi lebar penuh sel grid */
             min-width: 120px;
             transition: 0.2s;
         }
@@ -452,6 +447,106 @@
     </div>
 
     <!-- Scripts -->
+    <div class="modal fade" id="modalAddTrx" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-header bg-primary text-white p-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2"></i>Entri Data Transaksi Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <form id="trxForm" onsubmit="handleTrxSubmit(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="control-label">Jenis Sistem</label>
+                                <select name="type" id="trxType" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" required value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Wilayah</label>
+                                <select name="WK" id="trxWK" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">BUJP</label>
+                                <input name="BUJP" id="trxBUJPInput" class="form-control" placeholder="Nama BUJP" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">Uraian / No. Invoice</label>
+                                <input name="Keterangan" class="form-control" placeholder="Keterangan Transaksi" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Item BS</label>
+                                <select name="Item" id="trxItemSelect" class="form-select" onchange="checkBS11Logic(this.value)">
+                                    <option value="BS-8">BS-8</option>
+                                    <option value="BS-11">BS-11</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">LINE ANGGARAN</label>
+                                <select name="Pilihan_Anggaran" id="trxPilihan" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">Nominal Realisasi</label>
+                                <input type="number" name="Jumlah" class="form-control" placeholder="0" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">Lampiran Bukti</label>
+                                <input type="file" id="evFile" class="form-control" accept=".pdf,.jpg,.png">
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top text-end">
+                            <button type="button" class="btn btn-light fw-bold px-4 me-2" data-bs-dismiss="modal">BATAL</button>
+                            <button type="submit" id="btnTrxSubmit" class="btn btn-primary fw-bold px-5" style="border-radius: 12px;">SIMPAN DATA</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAddPagu" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-header bg-success text-white p-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-vault me-2"></i>Atur Alokasi Pagu Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <form id="paguForm" onsubmit="handlePaguSubmit(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="control-label">Wilayah Kerja</label>
+                                <select name="WK" id="paguWK" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Item Budget</label>
+                                <select name="Item" class="form-select">
+                                    <option value="BS-8">BS-8</option>
+                                    <option value="BS-11">BS-11</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">LINE ANGGARAN</label>
+                                <select name="Deskripsi" id="paguDeskripsi" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">Pagu Master (Rp)</label>
+                                <input type="number" name="Pagu" class="form-control" required placeholder="0">
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top text-end">
+                            <button type="button" class="btn btn-light fw-bold px-4 me-2" data-bs-dismiss="modal">BATAL</button>
+                            <button type="submit" id="btnPaguSubmit" class="btn btn-success fw-bold px-5" style="border-radius: 12px;">SIMPAN PAGU</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -719,7 +814,7 @@
                     </div>
                     <div class="control-item">
                         <label class="control-label">LINE ANGGARAN</label>
-                        <select id="filterDetail" class="form-select-pro" onchange="state.filters.detail=this.value; renderDashboardContent()" style="max-width: 160px;">
+                        <select id="filterDetail" class="form-select-pro" onchange="state.filters.detail=this.value; renderDashboardContent()">
                             <option value="ALL">Semua</option>
                         </select>
                     </div>
@@ -785,9 +880,19 @@
         }
 
         /**
-         * DATA LOGIC
+         * DATA LOGIC (OPTIMIZED WITH STATE CACHING MECHANISM)
          */
-        function loadData(callback) {
+        function loadData(callback, forceLoad = false) {
+            // Mekanisme Cache: Jika data sudah termuat di state.db dan tidak dipaksa refresh, langsung render instan
+            if (state.db && state.db.masterWK && state.db.masterWK.length > 0 && !forceLoad) {
+                if(state.view === 'dashboard') renderDashboardContent();
+                populateFilters();
+                if(state.view === 'transaksi') renderTrxTable();
+                if(state.view === 'pagu') renderPaguTable();
+                if(callback) callback();
+                return;
+            }
+
             startLoading();
             const role = state.user?.role || 'GUEST';
             const access = state.user?.wkAccess || 'ALL';
@@ -832,8 +937,8 @@
             const listPilihan = state.db?.masterPilihan || [];
             const listJenis = state.db?.masterJenisTrx || [];
 
-            // Target Wilayah (Dashboard, Form Transaksi, Modal, Pagu)
-            const wkSelectors = ['filterWk', 'editTrxWK', 'trxWK', 'paguWK'];
+            // Target Wilayah (Dashboard, Form Transaksi, Modal, Pagu, Serta Real-time Table Filters)
+            const wkSelectors = ['filterWk', 'editTrxWK', 'trxWK', 'paguWK', 'tableFilterTrxWK', 'tableFilterPaguWK'];
             wkSelectors.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -1115,64 +1220,25 @@
         }
 
         /**
-         * TRANSAKSI MODULE
+         * TRANSAKSI MODULE (MODAL DRIVEN & LIVE TABLE FILTER)
          */
         function renderTransaksi(el) {
             el.innerHTML = `
-                <div class="dashboard-controls"><h5 class="fw-bold mb-0 text-primary">Manajemen Transaksi Realisasi</h5></div>
-                <div class="p-4">
-                    <div class="kpi-card mb-4">
-                        <h6 class="fw-bold mb-3 small"><i class="fas fa-plus-circle me-2 text-primary"></i>Entri Data Baru</h6>
-                        <form id="trxForm" onsubmit="handleTrxSubmit(event)">
-                            <div class="row g-3">
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Jenis Sistem</label>
-                                    <select name="type" id="trxType" class="form-select form-select-sm" required></select>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Tanggal</label>
-                                    <input type="date" name="tanggal" class="form-control form-control-sm" required value="${new Date().toISOString().split('T')[0]}">
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Wilayah</label>
-                                    <select name="WK" id="trxWK" class="form-select form-select-sm" required></select>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">BUJP</label>
-                                    <input name="BUJP" id="trxBUJPInput" class="form-control form-control-sm" placeholder="Nama BUJP" required>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Uraian / No. Invoice</label>
-                                    <input name="Keterangan" class="form-control form-control-sm" placeholder="Keterangan Transaksi" required>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Item BS</label>
-                                    <select name="Item" id="trxItemSelect" class="form-select form-select-sm" onchange="checkBS11Logic(this.value)">
-                                        <option value="BS-8">BS-8</option>
-                                        <option value="BS-11">BS-11</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">LINE ANGGARAN</label>
-                                    <select name="Pilihan_Anggaran" id="trxPilihan" class="form-select form-select-sm" required></select>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Nominal Realisasi</label>
-                                    <input type="number" name="Jumlah" class="form-control form-control-sm" placeholder="0" required>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <label class="control-label">Lampiran Bukti</label>
-                                    <input type="file" id="evFile" class="form-control form-control-sm" accept=".pdf,.jpg,.png">
-                                </div>
-                                <div class="col-12 text-end mt-2">
-                                    <button type="submit" id="btnTrxSubmit" class="btn btn-primary fw-bold px-4" style="border-radius: 10px;">
-                                        <i class="fas fa-save me-2"></i> SIMPAN DATA
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                <div class="dashboard-controls d-flex justify-content-between align-items-center bg-white border-bottom px-4 py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-bold mb-0 text-primary me-2">Manajemen Transaksi</h5>
+                        <div class="control-item">
+                            <select id="tableFilterTrxWK" class="form-select form-select-sm fw-bold border-secondary-subtle" onchange="renderTrxTable()" style="min-width: 160px; border-radius: 8px; height: 36px;">
+                                <option value="ALL">— Semua Wilayah —</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="viz-card overflow-hidden p-0">
+                    <button class="btn btn-primary btn-sm fw-bold px-4 py-2 shadow-sm d-flex align-items-center gap-2" style="border-radius: 10px; height: 36px;" data-bs-toggle="modal" data-bs-target="#modalAddTrx">
+                        <i class="fas fa-plus-circle"></i> ENTRI DATA BARU
+                    </button>
+                </div>
+                <div class="p-4">
+                    <div class="viz-card overflow-hidden p-0 shadow-sm border-0 bg-white" style="border-radius: 16px;">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0" style="font-size: 13px;">
                                 <thead class="bg-light">
@@ -1210,11 +1276,17 @@
         function renderTrxTable() {
             const body = document.getElementById('trxBody');
             if(!body || !state.db) return;
-            const all = [
+            let all = [
                 ...(state.db.realisasiInternal || []).map(x => ({...x, sType: 'internal'})),
                 ...(state.db.realisasiInvoice || []).map(x => ({...x, sType: 'invoice'})),
                 ...(state.db.realisasiStakeholder || []).map(x => ({...x, sType: 'stakeholder'}))
             ].sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal));
+            
+            // Aplikasi Sistem Penyaringan Wilayah Sisi Klien
+            const filterWkVal = document.getElementById('tableFilterTrxWK')?.value || 'ALL';
+            if (filterWkVal !== 'ALL') {
+                all = all.filter(x => x.WK === filterWkVal);
+            }
             
             body.innerHTML = all.length ? all.map(t => {
                 const ket = t.No_Invoice || t.Keterangan || "";
@@ -1234,43 +1306,25 @@
         }
 
         /**
-         * PAGU MODULE - UPDATED: REMOVED BUJP
+         * PAGU MODULE (MODAL DRIVEN & LIVE TABLE FILTER)
          */
         function renderPagu(el) {
             el.innerHTML = `
-                <div class="dashboard-controls"><h5 class="fw-bold mb-0 text-success">Konfigurasi Pagu Alokasi 2026</h5></div>
-                <div class="p-4">
-                    <div class="kpi-card mb-4" style="border-top: 4px solid var(--accent);">
-                        <h6 class="fw-bold mb-3 small"><i class="fas fa-vault me-2 text-success"></i>Atur Pagu Baru</h6>
-                        <form id="paguForm" onsubmit="handlePaguSubmit(event)">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="control-label">Wilayah Kerja</label>
-                                    <select name="WK" id="paguWK" class="form-select form-select-sm" required></select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="control-label">Item Budget</label>
-                                    <select name="Item" class="form-select form-select-sm">
-                                        <option value="BS-8">BS-8</option>
-                                        <option value="BS-11">BS-11</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="control-label">LINE ANGGARAN</label>
-                                    <select name="Deskripsi" id="paguDeskripsi" class="form-select form-select-sm" required></select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="control-label">Pagu Master (Rp)</label>
-                                    <input type="number" name="Pagu" class="form-control form-control-sm" required placeholder="0">
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button type="submit" id="btnPaguSubmit" class="btn btn-success fw-bold px-4" style="border-radius: 10px;">SIMPAN PAGU</button>
-                                </div>
-                            </div>
-                        </form>
+                <div class="dashboard-controls d-flex justify-content-between align-items-center bg-white border-bottom px-4 py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-bold mb-0 text-success me-2">Konfigurasi Pagu Alokasi 2026</h5>
+                        <div class="control-item">
+                            <select id="tableFilterPaguWK" class="form-select form-select-sm fw-bold border-secondary-subtle" onchange="renderPaguTable()" style="min-width: 160px; border-radius: 8px; height: 36px;">
+                                <option value="ALL">— Semua Wilayah —</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="viz-card overflow-hidden p-0">
+                    <button class="btn btn-success btn-sm fw-bold px-4 py-2 shadow-sm d-flex align-items-center gap-2" style="border-radius: 10px; height: 36px;" data-bs-toggle="modal" data-bs-target="#modalAddPagu">
+                        <i class="fas fa-plus-circle"></i> ATUR PAGU BARU
+                    </button>
+                </div>
+                <div class="p-4">
+                    <div class="viz-card overflow-hidden p-0 shadow-sm border-0 bg-white" style="border-radius: 16px;">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0" style="font-size: 13px;">
                                 <thead class="bg-light">
@@ -1294,7 +1348,14 @@
         function renderPaguTable() {
             const body = document.getElementById('paguBody');
             if(!body || !state.db?.pagu) return;
-            body.innerHTML = state.db.pagu.map(p => `
+            
+            let displayPagu = state.db.pagu || [];
+            const filterPaguWkVal = document.getElementById('tableFilterPaguWK')?.value || 'ALL';
+            if (filterPaguWkVal !== 'ALL') {
+                displayPagu = displayPagu.filter(x => x.WK === filterPaguWkVal);
+            }
+            
+            body.innerHTML = displayPagu.map(p => `
                 <tr>
                     <td class="px-4 fw-bold">${p.WK}</td>
                     <td><span class="badge bg-light text-dark">${p.Item}</span></td>
@@ -1376,7 +1437,7 @@
                             if (res && res.success) {
                                 bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide();
                                 Swal.fire('Berhasil', 'Transaksi telah diperbarui', 'success');
-                                loadData();
+                                loadData(null, true); // forceLoad = true untuk memaksa pembacaan data baru dari cloud
                             } else {
                                 Swal.fire('Gagal', res.message, 'error');
                             }
@@ -1421,12 +1482,26 @@
                     data.mimeType = file.type;
                 }
                 if (typeof google === 'undefined') {
-                    setTimeout(() => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Sukses', 'Simpan data demo', 'success'); form.reset(); loadData(); }, 1000);
+                    setTimeout(() => { 
+                        endLoading(); 
+                        if (btn) btn.disabled = false; 
+                        Swal.fire('Sukses', 'Simpan data demo', 'success'); 
+                        form.reset(); 
+                        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalAddTrx'));
+                        if (modalInstance) modalInstance.hide();
+                        loadData(); 
+                    }, 1000);
                 } else {
                     google.script.run.withSuccessHandler(res => {
                         endLoading();
                         if (btn) btn.disabled = false;
-                        if(res && res.success) { Swal.fire('Berhasil', 'Transaksi dicatat', 'success'); form.reset(); loadData(); }
+                        if(res && res.success) { 
+                            Swal.fire('Berhasil', 'Transaksi dicatat', 'success'); 
+                            form.reset(); 
+                            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalAddTrx'));
+                            if (modalInstance) modalInstance.hide();
+                            loadData(null, true); // forceLoad = true untuk memperbarui tabel setelah entri data baru
+                        }
                         else Swal.fire('Gagal', res.message, 'error');
                     }).withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); })
                     .saveTransaction(data.type, data, state.user);
@@ -1440,11 +1515,24 @@
             const data = Object.fromEntries(new FormData(form));
             startLoading();
             if (typeof google === 'undefined') { 
-                setTimeout(() => { endLoading(); Swal.fire('Sukses', 'Data pagu diperbarui', 'success'); form.reset(); loadData(); }, 800); 
+                setTimeout(() => { 
+                    endLoading(); 
+                    Swal.fire('Sukses', 'Data pagu diperbarui', 'success'); 
+                    form.reset(); 
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalAddPagu'));
+                    if (modalInstance) modalInstance.hide();
+                    loadData(); 
+                }, 800); 
             } else {
                 google.script.run.withSuccessHandler(res => {
                     endLoading();
-                    if(res && res.success) { Swal.fire('Berhasil', 'Pagu diperbarui', 'success'); form.reset(); loadData(); }
+                    if(res && res.success) { 
+                        Swal.fire('Berhasil', 'Pagu diperbarui', 'success'); 
+                        form.reset(); 
+                        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalAddPagu'));
+                        if (modalInstance) modalInstance.hide();
+                        loadData(null, true); // forceLoad = true untuk sinkronisasi nilai alokasi pagu terbaru
+                    }
                 }).saveMasterPagu(data, state.user);
             }
         }
@@ -1552,8 +1640,8 @@
             }
         }
 
-        function delData(id, sType) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteData(id, sType, state.user); } }); }
-        function delPagu(id) { Swal.fire({ title: 'Hapus Pagu?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteMasterPagu(id, state.user); } }); }
+        function delData(id, sType) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteData(id, sType, state.user); } }); }
+        function delPagu(id) { Swal.fire({ title: 'Hapus Pagu?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteMasterPagu(id, state.user); } }); }
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
