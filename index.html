@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Monitoring 2026 | Security Division</title>
+    <!-- Konfigurasi PWA Manifest Manifest & Tema Seluler -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#064e3b">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <!-- CSS Dependencies -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,14 +20,13 @@
         :root { 
             --primary: #064e3b;
             --primary-dark: #022c22;
-            --accent: #d4af37; /* Gold Accent */
-            --bg-body: #f8fafc;
-            --sidebar-width: 280px;
-            --card-radius: 20px;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --shadow-premium: 0 10px 30px rgba(6, 78, 59, 0.05);
-            --text-main: #0f172a;
+            --accent: #10b981;
+            --bg-body: #f1f5f9;
+            --sidebar-width: 260px;
+            --card-radius: 16px;
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+            --text-main: #1e293b;
             --text-muted: #64748b;
         }
 
@@ -35,91 +36,76 @@
             color: var(--text-main);
             margin: 0;
             overflow-x: hidden;
-            background-image: radial-gradient(at 0% 0%, rgba(6, 78, 59, 0.03) 0px, transparent 50%), 
-                              radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.03) 0px, transparent 50%);
         }
 
-
-        /* Luxurious Sidebar */
+        /* Sidebar Styling */
         .sidebar { 
             width: var(--sidebar-width); 
-            background: linear-gradient(180deg, #022c22 0%, #064e3b 100%);
-            backdrop-filter: blur(15px);
+            background: var(--primary-dark);
             color: white; 
             height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s;
             z-index: 1050;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
         }
 
         .sidebar-brand {
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-brand h5 {
             font-weight: 800;
             letter-spacing: 1px;
-            color: var(--accent);
+            color: white;
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
-
         .nav-container {
-            padding: 1.5rem 1rem;
+            padding: 1.5rem 0.75rem;
             flex-grow: 1;
-            overflow-y: auto;
         }
 
         .nav-link-custom {
             display: flex;
             align-items: center;
-            padding: 1rem 1.25rem;
-            color: rgba(255,255,255,0.5);
-            text-decoration: none !important;
-            border-radius: 16px;
-            margin-bottom: 0.5rem;
-            transition: 0.3s all;
-            font-weight: 600;
+            padding: 0.8rem 1rem;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            transition: 0.2s;
+            font-weight: 500;
             font-size: 0.9rem;
             cursor: pointer;
         }
 
         .nav-link-custom i {
-            width: 24px;
-            margin-right: 15px;
-            font-size: 1.2rem;
-            transition: 0.3s;
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
         }
 
         .nav-link-custom:hover {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.05);
             color: white;
-            padding-left: 1.5rem;
         }
 
         .nav-link-custom.active {
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0) 100%);
-            color: var(--accent);
-            border-left: 4px solid var(--accent);
-            border-radius: 4px 16px 16px 4px;
+            background: var(--primary);
+            color: white;
         }
-
-        .nav-link-custom.active i { color: var(--accent); }
 
         .sidebar-footer {
-            padding: 2rem 1.5rem;
-            background: rgba(0,0,0,0.15);
+            padding: 1.5rem;
             border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.2);
         }
-
 
         /* Main Wrapper */
         .main-content {
@@ -130,39 +116,37 @@
 
         /* Top Navbar */
         .top-navbar {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 3rem;
+            background: white;
+            padding: 0.8rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
-        /* Glassmorphism Controls */
-        /* Executive Filter Card */
-        .filter-card {
+        /* Dashboard Controls - Forced single line */
+        .dashboard-controls {
             background: white;
-            border-radius: var(--card-radius);
-            padding: 1.5rem;
-            margin: 1.5rem 3rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            border: 1px solid #edf2f7;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            padding: 0.75rem 2.5rem;
+            margin: 0;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
             gap: 15px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
         }
 
-
-        .filter-card::-webkit-scrollbar { display: none; }
+        .dashboard-controls::-webkit-scrollbar { display: none; }
+        .dashboard-controls { -ms-overflow-style: none; scrollbar-width: none; }
 
         .control-item {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
             flex-shrink: 0;
         }
 
@@ -171,173 +155,105 @@
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
         }
 
         .form-select-pro {
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 0.5rem 2rem 0.5rem 1rem;
+            border-radius: 10px;
+            padding: 0.45rem 2rem 0.45rem 0.85rem;
             font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--primary);
-            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-main);
+            background-color: #f8fafc;
             cursor: pointer;
-            min-width: 140px;
-            transition: 0.3s;
+            min-width: 120px;
+            transition: 0.2s;
         }
-
 
         .form-select-pro:hover {
             border-color: var(--accent);
             background-color: white;
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
         }
 
-        /* Stats Row - Luxurious Cards */
+        /* Stats Row */
         .kpi-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-            padding: 2rem 3rem;
+            gap: 20px;
+            padding: 1.5rem 2rem;
         }
 
         .kpi-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
+            background: white;
             border-radius: var(--card-radius);
-            padding: 1.75rem;
-            box-shadow: var(--shadow-premium);
-            border: 1px solid var(--glass-border);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .kpi-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent);
-            opacity: 0;
-            transition: 0.3s;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.3s ease;
         }
 
         .kpi-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
         }
-
-        .kpi-card:hover::before { opacity: 1; }
 
         .kpi-label {
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: block;
         }
 
         .kpi-value {
-            font-size: 1.35rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
             color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-bottom: 0;
         }
-
 
         .kpi-subtext {
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-top: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 5px;
         }
-
 
         /* Visualization Layout */
         .visual-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 25px;
-            padding: 0 3rem 2rem 3rem;
+            gap: 20px;
+            padding: 0 2rem 1.5rem 2rem;
         }
 
         .viz-card {
             background: white;
             border-radius: var(--card-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-premium);
-            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
             display: flex;
             flex-direction: column;
-            transition: 0.3s;
         }
 
         .viz-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        /* Rank List Styling */
-        .rank-item {
-            display: flex;
-            align-items: center;
-            padding: 1.25rem;
-            background: #f8fafc;
-            border-radius: 16px;
-            margin-bottom: 1rem;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-
-        .rank-item:hover {
-            border-color: var(--accent);
-            background: white;
-            transform: scale(1.015);
-            box-shadow: var(--shadow-premium);
-        }
-
-        .rank-num {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-weight: 800;
-            margin-right: 20px;
-            background: var(--primary-dark);
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .rank-num.gold { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: white; }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        #pageContainer { animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* Map Styling */
+        /* Map Styling & Custom Pulse Animation */
         #dashMap { 
-            height: 550px; 
-            border-radius: 16px; 
+            height: 500px; 
+            border-radius: 12px; 
             width: 100%;
-            border: 1px solid rgba(0,0,0,0.05);
         }
-
 
         .custom-pulse-container {
             position: relative;
@@ -543,26 +459,28 @@
 
     <script>
         // =========================================================================
-        // SECURITY PIPELINE BRIDGE (VERCEL TO GOOGLE SCRIPT REST BRIDGE)
+        // PIPELINE JEMBATAN API (VERCEL TO GAS REST INTEGRATION BRIDGE)
         // =========================================================================
-        const GAS_SECURITY_API_URL = "https://script.google.com/macros/s/AKfycbzs2uRrKG-FCtE3qYXHFo_eV40rjmNaTIwh0CaeKYWOMd7_Uy_aUVjAdaoWAQ0vO_Oc/exec";
+        const GAS_SECURITY_API_URL = "https://script.google.com/macros/s/AKfycbxEsYhShSBGKm9PxUo7xobZpfvip82otfy0WxL7s6u-c8WbAT4FM3_KFSapsksmak84/exec";
 
+        // Inisialisasi PWA Offline Service Worker Shell
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker Registered!', reg.scope))
-                    .catch(err => console.error('Worker Injection Failed:', err));
+                    .then(reg => console.log('Security Web Worker Ready Context:', reg.scope))
+                    .catch(err => console.error('Worker Registration Defect:', err));
             });
         }
 
+        // Penyuntikan Polyfill Otomatis jika terdeteksi berjalan di luar runtime Google (Vercel)
         if (typeof google === 'undefined' || !google.script) {
             window.google = {
                 script: {
                     run: {
                         withSuccessHandler: function(cb) { this.success = cb; return this; },
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
-                        getAppData: function(token) {
-                            fetch(`${GAS_SECURITY_API_URL}?action=getAppData&token=${encodeURIComponent(token || '')}`)
+                        getAppData: function(role, wkAccess) {
+                            fetch(`${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`)
                                 .then(res => res.json())
                                 .then(d => {
                                     if (d && !d.error) {
@@ -571,9 +489,10 @@
                                     this.success(d);
                                 })
                                 .catch(err => {
+                                    // Strategi Fallback Offline: Muat cerminan data terakhir dari lokal
                                     const backup = localStorage.getItem("cache_security_db");
                                     if (backup) {
-                                        Swal.fire({ title: 'Mode Offline', text: 'Koneksi terganggu. Menampilkan modul peta & data sekuriti lokal.', icon: 'info', toast: true, position: 'top-end', showConfirmButton: false, timer: 4000 });
+                                        Swal.fire({ title: 'Mode Offline Aktif', text: 'Koneksi internet terganggu. Menampilkan rekaman data lokal terakhir.', icon: 'info', toast: true, position: 'top-end', showConfirmButton: false, timer: 3500 });
                                         this.success(JSON.parse(backup));
                                     } else {
                                         this.failure ? this.failure(err) : console.error(err);
@@ -582,41 +501,50 @@
                         },
                         loginUser: function(form) {
                             fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'loginUser', data: { form: form } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        saveMasterPagu: function(payload, token) {
-                            if(!navigator.onLine) return Swal.fire('Offline', 'Penyusunan pagu memerlukan koneksi live.', 'error');
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, token: token } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        saveMasterPagu: function(payload, userData) {
+                            if (!navigator.onLine) return Swal.fire('Gagal', 'Operasi penulisan alokasi pagu baru wajib dalam kondisi online.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, userData: userData } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        deleteMasterPagu: function(id, token) {
-                            if(!navigator.onLine) return Swal.fire('Offline', 'Penghapusan master data harus dilakukan secara online.', 'error');
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, token: token } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        deleteMasterPagu: function(id, userData) {
+                            if (!navigator.onLine) return Swal.fire('Gagal', 'Penghapusan data master memerlukan otorisasi cloud live.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, userData: userData } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        saveTransaction: function(type, payload, token) {
-                            if(!navigator.onLine) return Swal.fire('Offline', 'Pencatatan transaksi gagal. Silakan cari koneksi internet.', 'error');
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, token: token } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        saveTransaction: function(type, payload, userData) {
+                            if (!navigator.onLine) return Swal.fire('Gagal Transaksi', 'Perangkat sedang offline. Pengunggahan berkas bukti (evidence) memerlukan jaringan internet.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, userData: userData } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        updateTransaction: function(id, sType, payload, tokenOrUser) {
-                            if(!navigator.onLine) return Swal.fire('Offline', 'Pembaruan bukti transaksi memerlukan validasi cloud.', 'error');
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, tokenOrUser: tokenOrUser } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        updateTransaction: function(id, sType, payload, userData) {
+                            if (!navigator.onLine) return Swal.fire('Gagal Perbarui', 'Modifikasi transaksi memerlukan koneksi database cloud aktif.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, userData: userData } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        deleteData: function(id, sType, token) {
-                            if(!navigator.onLine) return Swal.fire('Offline', 'Gagal menghapus. Sinkronisasi cloud terputus.', 'error');
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, token: token } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        deleteData: function(id, sType, userData) {
+                            if (!navigator.onLine) return Swal.fire('Gagal Hapus', 'Koneksi terputus. Penghapusan baris transaksi gagal disinkronkan.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         },
-                        updateUserProfile: function(form, token) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form, token: token } }) })
-                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        updateUserProfile: function(form) {
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure ? this.failure(err) : console.error(err));
                         }
                     }
                 }
             };
         }
+
+        // Cross-Origin Iframe Safe Storage Helper (Mengamankan Sesi Login dari Blokir Browser di Vercel)
+        const memStorageFallback = {};
+        const safeStorage = {
+            getItem(key) { try { return localStorage.getItem(key); } catch(e) { return memStorageFallback[key] || null; } },
+            setItem(key, val) { try { localStorage.setItem(key, val); } catch(e) { memStorageFallback[key] = val; } },
+            removeItem(key) { try { localStorage.removeItem(key); } catch(e) { delete memStorageFallback[key]; } }
+        };
+        const localStorage = safeStorage; // Shadowing global storage secara aman
 
         /**
          * GLOBAL STATE
@@ -652,21 +580,15 @@
 
         function checkLoginState() {
             const session = localStorage.getItem('budget_session_2026');
-            const token = localStorage.getItem('budget_token_2026');
-            if (session && token) {
+            if (session) {
                 try { 
                     state.user = JSON.parse(session); 
-                    state.token = token;
-                    if(state.view === 'login-page') state.view = 'transaksi';
-                } catch(e) { 
-                    state.user = null; 
-                    state.token = null;
-                }
+                    if(state.view === 'dashboard') state.view = 'transaksi';
+                } catch(e) { state.user = null; }
             }
             renderApp();
             loadData();
         }
-
 
         /**
          * RENDERER ENGINE
@@ -682,83 +604,62 @@
             
             app.innerHTML = `
                 <div class="sidebar" id="sidebar">
-                    <div class="sidebar-brand text-center">
-                        <div class="mb-2">
-                            <i class="fas fa-building-shield text-accent mb-2" style="font-size: 20px;"></i>
-                            <h5 class="text-uppercase">BUDGET CONTROL</h5>
-                            <p class="small opacity-50 mb-0" style="font-size: 9px; font-weight: 700; letter-spacing: 1px;">SECURITY DIVISION</p>
+                    <div class="sidebar-brand">
+                        <div class="mb-1">
+                            <h5>ANGGARAN 2026</h5>
                         </div>
+                        <p class="small opacity-50 mb-0" style="font-size: 9px; font-weight: 700; text-transform: uppercase;">Divisi Sekuriti</p>
                     </div>
-
                     <div class="nav-container">
-                        <a class="nav-link-custom ${state.view === 'dashboard' ? 'active' : ''}" onclick="setView('dashboard')">
-                            <i class="fas fa-house-chimney"></i> Dashboard Utama
-                        </a>
-
-                        <a class="nav-link-custom ${state.view === 'ranking' ? 'active' : ''}" onclick="setView('ranking')">
-                            <i class="fas fa-trophy"></i> Performance Rank
-                        </a>
-
-                        <a class="nav-link-custom ${state.view === 'planner' ? 'active' : ''}" onclick="setView('planner')">
-                            <i class="fas fa-calendar-check"></i> Budget Planner 2027
-                        </a>
-
+                        ${isGuest ? `
+                            <a class="nav-link-custom ${state.view === 'dashboard' ? 'active' : ''}" onclick="setView('dashboard')">
+                                <i class="fas fa-chart-line"></i> Dashboard Beranda
+                            </a>
+                        ` : ''}
+                        
                         ${!isGuest ? `
-                            <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Operasional</div>
                             <a class="nav-link-custom ${state.view === 'transaksi' ? 'active' : ''}" onclick="setView('transaksi')">
-                                <i class="fas fa-receipt"></i> Data Transaksi
+                                <i class="fas fa-money-bill-transfer"></i> Manajemen Transaksi
                             </a>
-                            <a class="nav-link-custom ${state.view === 'log' ? 'active' : ''}" onclick="setView('log')">
-                                <i class="fas fa-clock-rotate-left"></i> Activity Log
-                            </a>
-                            
                             ${state.user.role === 'ADMIN' ? `
-                                <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Administrator</div>
                                 <a class="nav-link-custom ${state.view === 'pagu' ? 'active' : ''}" onclick="setView('pagu')">
-                                    <i class="fas fa-database"></i> Master Data & Pagu
+                                    <i class="fas fa-vault"></i> Konfigurasi Pagu
                                 </a>
                             ` : ''}
-                            
                             <a class="nav-link-custom ${state.view === 'profil' ? 'active' : ''}" onclick="setView('profil')">
-                                <i class="fas fa-user-shield"></i> Security Profile
+                                <i class="fas fa-user-gear"></i> Pengaturan Profil
                             </a>
-                        ` : `
-                            <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Akses Tamu</div>
-                            <a class="nav-link-custom" onclick="setView('login-page')">
-                                <i class="fas fa-lock"></i> Login Authorized
-                            </a>
-                        `}
+                        ` : ''}
                     </div>
                     
                     <div class="sidebar-footer">
                         ${!isGuest ? `
-                            <div class="d-flex align-items-center mb-3 p-3 rounded-4" style="background: rgba(255,255,255,0.05);">
-                                <div class="bg-accent rounded-circle p-2 me-3 shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-user text-dark" style="font-size: 16px;"></i>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-accent rounded-circle p-2 me-2 shadow-sm">
+                                    <i class="fas fa-user-shield text-white" style="font-size: 14px;"></i>
                                 </div>
                                 <div class="overflow-hidden">
-                                    <p class="small fw-bold mb-0 text-truncate text-white" style="font-size: 12px;">${state.user.nama}</p>
-                                    <p class="small opacity-50 mb-0" style="font-size: 9px;">${state.user.role} ACCESS</p>
+                                    <p class="small fw-bold mb-0 text-truncate text-white" style="font-size: 11px;">${state.user.nama}</p>
+                                    <p class="small opacity-50 mb-0" style="font-size: 9px; letter-spacing: 1px;">ROLE: ${state.user.role}</p>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-light btn-sm w-100 py-2 fw-bold opacity-75" onclick="logout()" style="font-size: 10px; border-radius: 12px; border-color: rgba(255,255,255,0.2);">
-                                <i class="fas fa-power-off me-2"></i> SIGN OUT
+                            <button class="btn btn-outline-danger btn-sm w-100 py-2 fw-bold" onclick="logout()" style="font-size: 10px; border-radius: 10px;">
+                                <i class="fas fa-sign-out-alt me-2"></i> TERMINASI SESI
                             </button>
                         ` : `
-                            <p class="small opacity-50 text-center mb-0" style="font-size: 10px;">V3.5 PREMIUM EDITION</p>
+                            <a href="https://wa.me/628111023422" target="_blank" class="btn btn-outline-success btn-sm w-100 py-2 fw-bold" style="border-radius: 10px; font-size: 10px;">
+                                <i class="fab fa-whatsapp me-2"></i> HUBUNGI BANTUAN
+                            </a>
                         `}
                     </div>
                 </div>
-
 
                 <div class="main-content">
                     <nav class="top-navbar">
                         <div class="d-flex align-items-center">
                             <button class="btn d-lg-none me-3" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></button>
-                            <h6 class="fw-bold mb-0 text-uppercase d-none d-sm-block" style="font-size: 11px; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">BUDGET MONITORING SYSTEM 2026</h6>
-
+                            <h6 class="fw-bold mb-0 text-uppercase d-none d-sm-block" style="font-size: 11px; letter-spacing: 1.5px; color: var(--text-muted);">Budget Monitoring System v3.0</h6>
                         </div>
-
                         <div class="d-flex align-items-center gap-4">
                             <div class="text-end d-none d-md-block">
                                 <p id="realtimeClock" class="mb-0"></p>
@@ -790,22 +691,18 @@
 
             switch(state.view) {
                 case 'dashboard': renderDashboard(container); break;
-                case 'ranking': renderRanking(container); break;
-                case 'planner': renderPlanner(container); break;
                 case 'transaksi': renderTransaksi(container); break;
-                case 'log': renderLog(container); break;
                 case 'pagu': renderPagu(container); break;
                 case 'profil': renderProfil(container); break;
             }
         }
-
 
         /**
          * DASHBOARD MODULE
          */
         function renderDashboard(el) {
             el.innerHTML = `
-                <div class="filter-card">
+                <div class="dashboard-controls">
                     <div class="control-item">
                         <label class="control-label">Wilayah</label>
                         <select id="filterWk" class="form-select-pro" onchange="state.filters.wk=this.value; renderDashboardContent()">
@@ -839,10 +736,6 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="px-5 mb-3" id="ai-insights-container"></div>
-
-
 
                 <div class="kpi-row">
                     <div class="kpi-card" style="border-top: 4px solid var(--primary);">
@@ -896,7 +789,8 @@
          */
         function loadData(callback) {
             startLoading();
-            const token = state.token;
+            const role = state.user?.role || 'GUEST';
+            const access = state.user?.wkAccess || 'ALL';
 
             if (typeof google === 'undefined') {
                 setTimeout(() => {
@@ -912,10 +806,6 @@
             } else {
                 google.script.run
                     .withSuccessHandler(res => { 
-                        if (res.error) {
-                            Swal.fire('Sesi Berakhir', res.error, 'warning').then(() => logout());
-                            return;
-                        }
                         state.db = res; 
                         endLoading();
                         if(state.view === 'dashboard') renderDashboardContent();
@@ -928,10 +818,9 @@
                         endLoading();
                         Swal.fire('Error', 'Gagal memuat data dari server', 'error');
                     })
-                    .getAppData(token);
+                    .getAppData(role, access);
             }
         }
-
 
         /**
          * POPULATE FILTERS - UPDATED TO BE MORE STABLE
@@ -1021,9 +910,6 @@
                     `Rincian LINE ANGGARAN Wilayah ${state.filters.wk}`;
             }
 
-            renderAIInsights(p, r);
-
-
             requestAnimationFrame(() => {
                 updateMap(p, r);
                 renderCategoryCards(p, r);
@@ -1050,127 +936,6 @@
                 }
             });
         }
-
-        function renderAIInsights(pagu, realisasi) {
-            const container = document.getElementById('ai-insights-container');
-            if (!container) return;
-
-            let insights = [];
-            const today = new Date();
-            const currentMonth = today.getMonth() + 1; 
-            const isGlobal = state.filters.wk === 'ALL';
-            const TARGET_PERC = 90;
-
-            const totalPagu = pagu.reduce((a,b) => a + Number(b.Pagu || 0), 0);
-            const totalReal = realisasi.reduce((a,b) => a + Number(b.Jumlah || 0), 0);
-            const runRate = totalReal / currentMonth;
-
-            // --- 1. DYNAMIC BENCHMARK DETERMINATION ---
-            let benchmarkMonths = 12;
-            let contextName = "akhir tahun";
-            
-            if (!isGlobal) {
-                const wkProfile = (state.db.masterWK || []).find(w => w.Nama_WK === state.filters.wk);
-                if (wkProfile && wkProfile.CONTRACT_END_DATE) {
-                    const endDate = new Date(wkProfile.CONTRACT_END_DATE);
-                    if (endDate.getFullYear() === today.getFullYear()) {
-                        benchmarkMonths = endDate.getMonth() + 1;
-                        contextName = "akhir masa kontrak";
-                    }
-                }
-            }
-
-            // --- 2. ANALYSIS BY TARGET (ADAPTIVE BENCHMARK) ---
-            if (totalPagu > 0) {
-                const projectedAtEnd = runRate * benchmarkMonths;
-                const projectedPerc = (projectedAtEnd / totalPagu) * 100;
-                
-                if (projectedPerc < TARGET_PERC) {
-                    const shortFall = (totalPagu * (TARGET_PERC/100)) - projectedAtEnd;
-                    insights.push({
-                        type: 'warning', icon: 'fa-gauge-low',
-                        title: `Target Serapan 90% (${contextName.toUpperCase()}): BELUM TERCAPAI`,
-                        text: `Estimasi serapan hingga <b>${contextName}</b> hanya <b>${projectedPerc.toFixed(1)}%</b>. <b>Saran:</b> Diperlukan akselerasi penyerapan minimal <b>${fmtShort(shortFall)}</b> sebelum kontrak berakhir.`
-                    });
-                } else if (projectedPerc > 105) {
-                    insights.push({
-                        type: 'danger', icon: 'fa-triangle-exclamation',
-                        title: `Risiko Defisit Anggaran (${contextName.toUpperCase()})`,
-                        text: `Proyeksi serapan hingga <b>${contextName}</b> mencapai <b>${projectedPerc.toFixed(1)}%</b>. <b>Saran:</b> Segera tinjau kebutuhan amandemen anggaran.`
-                    });
-                } else {
-                    insights.push({
-                        type: 'success', icon: 'fa-circle-check',
-                        title: `Target Serapan 90% (${contextName.toUpperCase()}): ON-TRACK`,
-                        text: `Tren penggunaan saat ini diprediksi mencapai <b>${projectedPerc.toFixed(1)}%</b> di ${contextName}. Anggaran dalam kondisi stabil.`
-                    });
-                }
-            }
-
-
-            // --- 2. REGIONAL CONTRACT AUDIT ---
-            if (!isGlobal && state.filters.wk !== 'ALL') {
-                const wkProfile = (state.db.masterWK || []).find(w => w.Nama_WK === state.filters.wk);
-                if (wkProfile && wkProfile.CONTRACT_END_DATE) {
-                    const endDate = new Date(wkProfile.CONTRACT_END_DATE);
-                    const monthsToContract = Math.max(1, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24 * 30.44)));
-                    const projectedToContractEnd = totalReal + (runRate * monthsToContract);
-                    
-                    if (projectedToContractEnd > totalPagu) {
-                        insights.push({
-                            type: 'danger', icon: 'fa-file-signature',
-                            title: `Peringatan Amandemen: ${state.filters.wk}`,
-                            text: `Sisa anggaran tidak cukup hingga akhir kontrak (<b>${monthsToContract} bln lagi</b>). Estimasi kebutuhan: <b>${fmtShort(projectedToContractEnd)}</b>.`
-                        });
-                    }
-
-                    if (monthsToContract <= 3) {
-                        const nextYearReq = runRate * 12;
-                        insights.push({
-                            type: 'info', icon: 'fa-clipboard-check',
-                            title: `Persiapan Kontrak Baru & Budget 2027`,
-                            text: `Sisa kontrak <b>${monthsToContract} bulan</b>. Estimasi RKA 2027: <b>${fmtShort(nextYearReq)}</b>. <b>Wajib:</b> Lakukan review KPI BUJP ${wkProfile.BUJP_NAME} sekarang.`
-                        });
-                    }
-                }
-            }
-
-            // --- 3. DATA INTEGRITY ---
-            const missingEvidence = realisasi.filter(rx => new Date(rx.Tanggal).getMonth() === today.getMonth() && !rx.Evidence);
-            if (missingEvidence.length > 0) {
-                insights.push({
-                    type: 'secondary', icon: 'fa-file-circle-exclamation',
-                    title: `Audit Bukti Transaksi`,
-                    text: `<b>${missingEvidence.length} item</b> belum memiliki file pendukung. Lengkapi segera untuk validasi penyerapan.`
-                });
-            }
-
-            if (insights.length === 0) {
-                container.innerHTML = `<div class="alert alert-success border-0 shadow-sm d-flex align-items-center" style="border-radius:12px; background:white;"><i class="fas fa-check-circle text-success me-3" style="font-size:24px;"></i><div><p class="mb-0 fw-bold text-success">Sistem Normal</p><p class="small text-muted mb-0">Tidak ada anomali yang terdeteksi.</p></div></div>`;
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="viz-card mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);">
-                    <div class="viz-title mb-3" style="color:var(--primary);"><i class="fas fa-robot-astronaut"></i> AI STRATEGIC PERFORMANCE MONITORING</div>
-                    <div class="row g-3">
-                        ${insights.map(ins => `
-                            <div class="col-md-6">
-                                <div class="d-flex p-3 rounded-4 bg-white shadow-sm border-start border-4 border-${ins.type}" style="height:100%;">
-                                    <div class="me-3 mt-1"><i class="fas ${ins.icon} text-${ins.type}" style="font-size:18px;"></i></div>
-                                    <div><h6 class="fw-bold mb-1" style="font-size:12px;">${ins.title}</h6><p class="small text-muted mb-0" style="font-size:11px;">${ins.text}</p></div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-        }
-
-
-
-
-
-
 
         function renderCategoryCards(pData, rData) {
             const container = document.getElementById('categoryCardsContainer');
@@ -1469,177 +1234,11 @@
         }
 
         /**
-         * RANKING MODULE
-         */
-        function renderRanking(el) {
-            if(!state.db) return;
-            const listWK = state.db.masterWK || [];
-            const pagu = state.db.pagu || [];
-            const real = [...(state.db.realisasiInternal || []), ...(state.db.realisasiInvoice || []), ...(state.db.realisasiStakeholder || [])];
-
-            const stats = listWK.map(wk => {
-                const pVal = pagu.filter(x => x.WK === wk.Nama_WK).reduce((a,b)=>a+Number(b.Pagu || 0), 0);
-                const rVal = real.filter(x => x.WK === wk.Nama_WK).reduce((a,b)=>a+Number(b.Jumlah || 0), 0);
-                const perc = pVal > 0 ? (rVal / pVal) * 100 : 0;
-                return { name: wk.Nama_WK, bujp: wk.BUJP_NAME, pVal, rVal, perc };
-            }).sort((a,b) => b.perc - a.perc);
-
-            el.innerHTML = `
-                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-trophy me-2 text-accent"></i> PERFORMANCE RANKING (ABSORPTION)</h6></div>
-                <div class="p-5">
-                    <div class="row g-4">
-                        <div class="col-md-7">
-                            <div class="viz-card">
-                                <div class="viz-title">WILAYAH KERJA PERFORMANCE LEADERBOARD</div>
-                                ${stats.map((s, i) => `
-                                    <div class="rank-item">
-                                        <div class="rank-num ${i < 3 ? 'gold' : ''}">${i + 1}</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <span class="fw-bold text-dark">${s.name}</span>
-                                                <span class="fw-bold ${s.perc > 90 ? 'text-success' : 'text-danger'}" style="font-size:14px;">${s.perc.toFixed(1)}%</span>
-                                            </div>
-                                            <div class="progress" style="height: 6px; border-radius:10px;">
-                                                <div class="progress-bar ${s.perc > 90 ? 'bg-success' : 'bg-accent'}" style="width: ${Math.min(s.perc, 100)}%"></div>
-                                            </div>
-                                            <div class="d-flex justify-content-between mt-1 small opacity-50">
-                                                <span>BUJP: ${s.bujp}</span>
-                                                <span>Serapan: ${fmtShort(s.rVal)} / ${fmtShort(s.pVal)}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="kpi-card mb-4" style="background:var(--primary-dark); color:white;">
-                                <h6 class="text-accent fw-bold mb-4">INSIGHT REWARD & PUNISHMENT</h6>
-                                <p class="small opacity-75">Wilayah dengan serapan di atas 90% diprioritaskan untuk pemenuhan fasilitas tambahan di tahun anggaran berikutnya.</p>
-                                <hr class="opacity-25">
-                                <p class="small opacity-75">Wilayah dengan serapan di bawah 60% akan mendapatkan surat teguran dan audit performa BUJP operasional.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        /**
-         * BUDGET PLANNER MODULE
-         */
-        function renderPlanner(el) {
-            const today = new Date();
-            const currentMonth = today.getMonth() + 1;
-            const pagu = state.db.pagu || [];
-            const real = [...(state.db.realisasiInternal || []), ...(state.db.realisasiInvoice || []), ...(state.db.realisasiStakeholder || [])];
-            
-            const totalPagu = pagu.reduce((a,b)=>a+Number(b.Pagu||0), 0);
-            const totalReal = real.reduce((a,b)=>a+Number(b.Jumlah||0), 0);
-            const runRate = totalReal / currentMonth;
-            const nextYearEst = runRate * 12 * 1.05; // Estimate with 5% inflation
-
-            el.innerHTML = `
-                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-calendar-check me-2 text-accent"></i> BUDGET PLANNER & RKA 2027 SIMULATOR</h6></div>
-                <div class="p-5">
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="kpi-card h-100">
-                                <span class="kpi-label">Pagu Berjalan 2026</span>
-                                <div class="kpi-value text-dark">${fmtShort(totalPagu)}</div>
-                                <p class="small text-muted mt-2">Baseline anggaran operasional saat ini.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="kpi-card h-100">
-                                <span class="kpi-label">Run-Rate Realisasi</span>
-                                <div class="kpi-value text-primary">${fmtShort(runRate)}</div>
-                                <p class="small text-muted mt-2">Rata-rata pengeluaran per bulan.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="kpi-card h-100" style="border:2px solid var(--accent);">
-                                <span class="kpi-label">Proyeksi RKA 2027</span>
-                                <div class="kpi-value" style="color:var(--accent);">${fmtShort(nextYearEst)}</div>
-                                <p class="small text-muted mt-2">Estimasi kebutuhan (Run-rate x 12 + 5% Buffer).</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="viz-card mt-4">
-                        <div class="viz-title">SIMULASI PENYESUAIAN ANGGARAN 2027</div>
-                        <p class="small text-muted mb-4">Gunakan tool ini untuk memprediksi kebutuhan anggaran jika terjadi penambahan personel atau eskalasi biaya.</p>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="small fw-bold text-muted mb-2">Estimasi Eskalasi Biaya (%)</label>
-                                <input type="range" class="form-range" min="0" max="20" step="1" value="5" oninput="document.getElementById('eskalasiVal').innerText=this.value+'%'; updateSim(this.value)">
-                                <span id="eskalasiVal" class="fw-bold text-primary">5%</span>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="p-3 rounded-4 bg-light text-center">
-                                    <span class="small text-muted d-block mb-1">TOTAL USULAN RKA 2027</span>
-                                    <h4 id="simResult" class="fw-bold text-success mb-0">${fmtShort(nextYearEst)}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            window.updateSim = (val) => {
-                const res = runRate * 12 * (1 + (parseInt(val)/100));
-                document.getElementById('simResult').innerText = fmtShort(res);
-            };
-        }
-
-        /**
-         * ACTIVITY LOG MODULE
-         */
-        function renderLog(el) {
-            const all = [
-                ...(state.db.realisasiInternal || []).map(x => ({...x, sType: 'internal'})),
-                ...(state.db.realisasiInvoice || []).map(x => ({...x, sType: 'invoice'})),
-                ...(state.db.realisasiStakeholder || []).map(x => ({...x, sType: 'stakeholder'}))
-            ].sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal)).slice(0, 30);
-
-            el.innerHTML = `
-                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-clock-rotate-left me-2 text-accent"></i> RECENT ACTIVITY LOG</h6></div>
-                <div class="p-5">
-                    <div class="viz-card p-0 overflow-hidden">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th class="px-4 py-3 small fw-bold">WAKTU</th>
-                                        <th class="py-3 small fw-bold">WILAYAH</th>
-                                        <th class="py-3 small fw-bold">URAIAN TRANSAKSI</th>
-                                        <th class="py-3 small fw-bold text-end">NOMINAL</th>
-                                        <th class="py-3 small fw-bold text-center">STATUS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${all.map(t => `
-                                        <tr>
-                                            <td class="px-4 py-3 small text-muted">${t.Tanggal}</td>
-                                            <td class="py-3 small fw-bold">${t.WK}</td>
-                                            <td class="py-3 small">${t.Keterangan || t.No_Invoice}</td>
-                                            <td class="py-3 small text-end fw-bold">${fmtShort(t.Jumlah)}</td>
-                                            <td class="py-3 text-center"><span class="badge bg-success-subtle text-success border border-success-subtle px-3" style="font-size:10px;">TERCATAT</span></td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        /**
          * PAGU MODULE - UPDATED: REMOVED BUJP
          */
         function renderPagu(el) {
             el.innerHTML = `
-                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-database me-2 text-accent"></i> MASTER DATA & KONFIGURASI PAGU 2026</h6></div>
-
+                <div class="dashboard-controls"><h5 class="fw-bold mb-0 text-success">Konfigurasi Pagu Alokasi 2026</h5></div>
                 <div class="p-4">
                     <div class="kpi-card mb-4" style="border-top: 4px solid var(--accent);">
                         <h6 class="fw-bold mb-3 small"><i class="fas fa-vault me-2 text-success"></i>Atur Pagu Baru</h6>
@@ -1807,14 +1406,10 @@
             const fileInput = document.getElementById('evFile');
             
             try {
+                if (btn) btn.disabled = true;
+                startLoading();
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    if (file.size > 2 * 1024 * 1024) {
-                        Swal.fire('Ukuran Terlalu Besar', 'Maksimal ukuran file bukti adalah 2MB.', 'warning');
-                        return;
-                    }
-                    if (btn) btn.disabled = true;
-                    startLoading();
                     const base64 = await new Promise((resolve, reject) => {
                         const rd = new FileReader();
                         rd.readAsDataURL(file);
@@ -1824,11 +1419,7 @@
                     data.fileContent = base64.split(',')[1];
                     data.fileName = file.name;
                     data.mimeType = file.type;
-                } else {
-                    if (btn) btn.disabled = true;
-                    startLoading();
                 }
-
                 if (typeof google === 'undefined') {
                     setTimeout(() => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Sukses', 'Simpan data demo', 'success'); form.reset(); loadData(); }, 1000);
                 } else {
@@ -1838,11 +1429,10 @@
                         if(res && res.success) { Swal.fire('Berhasil', 'Transaksi dicatat', 'success'); form.reset(); loadData(); }
                         else Swal.fire('Gagal', res.message, 'error');
                     }).withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); })
-                    .saveTransaction(data.type, data, state.token);
+                    .saveTransaction(data.type, data, state.user);
                 }
             } catch (err) { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.message, 'error'); }
         }
-
 
         function handlePaguSubmit(e) {
             e.preventDefault();
@@ -1855,11 +1445,9 @@
                 google.script.run.withSuccessHandler(res => {
                     endLoading();
                     if(res && res.success) { Swal.fire('Berhasil', 'Pagu diperbarui', 'success'); form.reset(); loadData(); }
-                    else Swal.fire('Gagal', res.message, 'error');
-                }).saveMasterPagu(data, state.token);
+                }).saveMasterPagu(data, state.user);
             }
         }
-
 
         /**
          * OTHER SCREENS
@@ -1924,10 +1512,9 @@
                     } else {
                         Swal.fire('Gagal', res.message, 'error');
                     }
-                }).updateUserProfile(data, state.token); 
+                }).updateUserProfile(data); 
             }
         }
-
 
         function renderLoginPage(el) {
             el.innerHTML = `
@@ -1955,47 +1542,27 @@
             const data = Object.fromEntries(new FormData(e.target));
             startLoading();
             if (typeof google === 'undefined') {
-                setTimeout(() => { 
-                    endLoading(); 
-                    if(data.username === 'admin') { 
-                        state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; 
-                        state.token = 'demo-token';
-                        localStorage.setItem('budget_session_2026', JSON.stringify(state.user));
-                        localStorage.setItem('budget_token_2026', state.token);
-                        setView('transaksi'); 
-                    } 
-                }, 1000);
+                setTimeout(() => { endLoading(); if(data.username === 'admin') { state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; setView('transaksi'); } }, 1000);
             } else {
                 google.script.run.withSuccessHandler(res => {
                     endLoading();
-                    if (res && res.success) { 
-                        localStorage.setItem('budget_session_2026', JSON.stringify(res.user)); 
-                        localStorage.setItem('budget_token_2026', res.token);
-                        state.user = res.user; 
-                        state.token = res.token;
-                        setView('transaksi'); 
-                    }
+                    if (res && res.success) { localStorage.setItem('budget_session_2026', JSON.stringify(res.user)); state.user = res.user; setView('transaksi'); }
                     else Swal.fire('Gagal', res.message, 'error');
                 }).loginUser(data);
             }
         }
 
-
-        function delData(id, sType) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteData(id, sType, state.token); } }); }
-        function delPagu(id) { Swal.fire({ title: 'Hapus Pagu?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteMasterPagu(id, state.token); } }); }
-
+        function delData(id, sType) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteData(id, sType, state.user); } }); }
+        function delPagu(id) { Swal.fire({ title: 'Hapus Pagu?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteMasterPagu(id, state.user); } }); }
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         
         function logout() { 
             localStorage.removeItem('budget_session_2026'); 
-            localStorage.removeItem('budget_token_2026'); 
             state.user = null; 
-            state.token = null;
             setView('dashboard'); 
         }
-
 
         function fmt(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0); }
         function fmtShort(n) { if (n >= 1e9) return (n/1e9).toFixed(1) + ' M'; if (n >= 1e6) return (n/1e6).toFixed(1) + ' Jt'; return fmt(n); }
