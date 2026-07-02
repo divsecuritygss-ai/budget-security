@@ -2,45 +2,2003 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Budget Monitoring Security</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Monitoring 2026 | Security Division</title>
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#064e3b">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #0b1329;
+        :root { 
+            --primary: #064e3b;
+            --primary-dark: #022c22;
+            --accent: #d4af37; /* Gold Accent */
+            --bg-body: #f8fafc;
+            --sidebar-width: 280px;
+            --card-radius: 20px;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow-premium: 0 10px 30px rgba(6, 78, 59, 0.05);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+
+        body { 
+            background: var(--bg-body); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+            background-image: radial-gradient(at 0% 0%, rgba(6, 78, 59, 0.03) 0px, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.03) 0px, transparent 50%);
+        }
+
+
+        /* Luxurious Sidebar */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, #022c22 0%, #064e3b 100%);
+            backdrop-filter: blur(15px);
+            color: white; 
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-brand {
+            padding: 2.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-brand h5 {
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+
+        .nav-container {
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none !important;
+            border-radius: 16px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s all;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .nav-link-custom i {
+            width: 24px;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .nav-link-custom:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            padding-left: 1.5rem;
+        }
+
+        .nav-link-custom.active {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0) 100%);
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+            border-radius: 4px 16px 16px 4px;
+        }
+
+        .nav-link-custom.active i { color: var(--accent); }
+
+        .sidebar-footer {
+            padding: 2rem 1.5rem;
+            background: rgba(0,0,0,0.15);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+
+        /* Main Wrapper */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: 0.3s;
+            min-height: 100vh;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+
+        /* Glassmorphism Controls */
+        /* Executive Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid #edf2f7;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+
+        .filter-card::-webkit-scrollbar { display: none; }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .form-select-pro {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: #f1f5f9;
+            cursor: pointer;
+            min-width: 140px;
+            transition: 0.3s;
+        }
+
+
+        .form-select-pro:hover {
+            border-color: var(--accent);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Stats Row - Luxurious Cards */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            padding: 2rem 3rem;
+        }
+
+        .kpi-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            border-radius: var(--card-radius);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-premium);
+            border: 1px solid var(--glass-border);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent);
+        }
+
+        .kpi-card:hover::before { opacity: 1; }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
             display: block;
+        }
+
+        .kpi-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .kpi-subtext {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+
+        /* Visualization Layout */
+        .visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            padding: 0 3rem 2rem 3rem;
+        }
+
+        .viz-card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-premium);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .viz-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Rank List Styling */
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .rank-item:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: scale(1.015);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .rank-num {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 800;
+            margin-right: 20px;
+            background: var(--primary-dark);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .rank-num.gold { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: white; }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #pageContainer { animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Map Styling */
+        #dashMap { 
+            height: 550px; 
+            border-radius: 16px; 
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+
+        .custom-pulse-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pulse-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            position: relative;
+            z-index: 2;
+        }
+        .pulse-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            animation: pulse-animation 2s infinite;
+            z-index: 1;
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .leaflet-container {
+            cursor: grab !important;
+        }
+        .leaflet-container:active {
+            cursor: grabbing !important;
+        }
+        .leaflet-marker-icon, .leaflet-interactive { 
+            cursor: pointer !important; 
+        }
+
+        /* Category Insights */
+        .section-label {
+            padding: 0 2rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            height: 100%;
+        }
+
+        .insight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            min-height: 40px;
+        }
+
+        .insight-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            max-width: 75%;
+        }
+
+        .insight-perc {
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .insight-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 1.25rem;
+        }
+
+        .insight-stat-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .insight-stat-lbl {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Utilities */
+        .loading-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(255,255,255,0.95); z-index: 9999; 
+            display: none; flex-direction: column; align-items: center; justify-content: center; 
+        }
+
+        #realtimeClock { font-weight: 800; color: var(--primary); font-size: 0.9rem; }
+
+        @media (max-width: 1200px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-row { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .dashboard-controls { padding: 0.75rem 1rem; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <iframe 
-        src="https://script.google.com/macros/s/AKfycbxEsYhShSBGKm9PxUo7xobZpfvip82otfy0WxL7s6u-c8WbAT4FM3_KFSapsksmak84/exec" 
-        allow="camera; clipboard-write; geolocation;"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation-by-user-activation">
-    </iframe>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border text-success" role="status"></div>
+        <div class="mt-3 fw-bold text-success" style="font-size: 14px; letter-spacing: 1px;">SINKRONISASI DATA KEAMANAN...</div>
+    </div>
+
+    <div id="app"></div>
+
+    <!-- Modal Edit Transaksi -->
+    <div class="modal fade" id="modalEditTrx" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-header bg-primary text-white p-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Edit Detail Transaksi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <form id="formEditTrx" onsubmit="handleTrxEditSubmit(event)">
+                        <input type="hidden" id="editTrxId">
+                        <input type="hidden" id="editTrxType">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="control-label">Tanggal</label>
+                                <input type="date" id="editTrxDate" name="tanggal" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Wilayah</label>
+                                <select id="editTrxWK" name="WK" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Nama BUJP</label>
+                                <input id="editTrxBUJP" name="BUJP" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Uraian / No. Invoice</label>
+                                <input id="editTrxKet" name="Keterangan" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Item BS</label>
+                                <select id="editTrxItem" name="Item" class="form-select">
+                                    <option value="BS-8">BS-8</option>
+                                    <option value="BS-11">BS-11</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Line Anggaran</label>
+                                <select id="editTrxPilihan" name="Pilihan_Anggaran" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Nominal (Rp)</label>
+                                <input type="number" id="editTrxJumlah" name="Jumlah" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Unggah Bukti Baru (Opsional)</label>
+                                <input type="file" id="editTrxFile" class="form-control" accept=".pdf,.jpg,.png">
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top text-end">
+                            <button type="button" class="btn btn-light fw-bold px-4 me-2" data-bs-dismiss="modal">BATAL</button>
+                            <button type="submit" id="btnTrxUpdate" class="btn btn-primary fw-bold px-5" style="border-radius: 12px;">SIMPAN PERUBAHAN</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        // =========================================================================
+        // SECURITY PIPELINE BRIDGE (VERCEL TO GOOGLE SCRIPT REST BRIDGE)
+        // =========================================================================
+        const GAS_SECURITY_API_URL = "https://script.google.com/macros/s/AKfycbzs2uRrKG-FCtE3qYXHFo_eV40rjmNaTIwh0CaeKYWOMd7_Uy_aUVjAdaoWAQ0vO_Oc/exec";
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker Budget terdaftar!'))
-                    .catch(err => console.log('SW Gagal:', err));
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker Registered!', reg.scope))
+                    .catch(err => console.error('Worker Injection Failed:', err));
             });
         }
+
+        if (typeof google === 'undefined' || !google.script) {
+            window.google = {
+                script: {
+                    run: {
+                        withSuccessHandler: function(cb) { this.success = cb; return this; },
+                        withFailureHandler: function(cb) { this.failure = cb; return this; },
+                        getAppData: function(token) {
+                            fetch(`${GAS_SECURITY_API_URL}?action=getAppData&token=${encodeURIComponent(token || '')}`)
+                                .then(res => res.json())
+                                .then(d => {
+                                    if (d && !d.error) {
+                                        localStorage.setItem("cache_security_db", JSON.stringify(d));
+                                    }
+                                    this.success(d);
+                                })
+                                .catch(err => {
+                                    const backup = localStorage.getItem("cache_security_db");
+                                    if (backup) {
+                                        Swal.fire({ title: 'Mode Offline', text: 'Koneksi terganggu. Menampilkan modul peta & data sekuriti lokal.', icon: 'info', toast: true, position: 'top-end', showConfirmButton: false, timer: 4000 });
+                                        this.success(JSON.parse(backup));
+                                    } else {
+                                        this.failure ? this.failure(err) : console.error(err);
+                                    }
+                                });
+                        },
+                        loginUser: function(form) {
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'loginUser', data: { form: form } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        saveMasterPagu: function(payload, token) {
+                            if(!navigator.onLine) return Swal.fire('Offline', 'Penyusunan pagu memerlukan koneksi live.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, token: token } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        deleteMasterPagu: function(id, token) {
+                            if(!navigator.onLine) return Swal.fire('Offline', 'Penghapusan master data harus dilakukan secara online.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, token: token } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        saveTransaction: function(type, payload, token) {
+                            if(!navigator.onLine) return Swal.fire('Offline', 'Pencatatan transaksi gagal. Silakan cari koneksi internet.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, token: token } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        updateTransaction: function(id, sType, payload, tokenOrUser) {
+                            if(!navigator.onLine) return Swal.fire('Offline', 'Pembaruan bukti transaksi memerlukan validasi cloud.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, tokenOrUser: tokenOrUser } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        deleteData: function(id, sType, token) {
+                            if(!navigator.onLine) return Swal.fire('Offline', 'Gagal menghapus. Sinkronisasi cloud terputus.', 'error');
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, token: token } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        },
+                        updateUserProfile: function(form, token) {
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form, token: token } }) })
+                                .then(res => res.json()).then(d => this.success(d.result)).catch(err => this.failure(err));
+                        }
+                    }
+                }
+            };
+        }
+
+        /**
+         * GLOBAL STATE
+         */
+        let state = {
+            user: null,
+            view: 'dashboard',
+            filters: { wk: 'ALL', item: 'ALL', detail: 'ALL', start: 0, end: 11 },
+            db: { 
+                masterWK: [], 
+                masterPilihan: [], 
+                pagu: [], 
+                realisasiInternal: [], 
+                realisasiInvoice: [], 
+                realisasiStakeholder: [],
+                masterJenisTrx: []
+            }, 
+            charts: { bar: null, pie: null, categories: {} },
+            map: null,
+            markers: {},
+            editMode: { id: null, sType: null } 
+        };
+
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+        window.onload = function() {
+            checkLoginState();
+        };
+
+        function startLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+        function endLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+        function checkLoginState() {
+            const session = localStorage.getItem('budget_session_2026');
+            const token = localStorage.getItem('budget_token_2026');
+            if (session && token) {
+                try { 
+                    state.user = JSON.parse(session); 
+                    state.token = token;
+                    if(state.view === 'login-page') state.view = 'transaksi';
+                } catch(e) { 
+                    state.user = null; 
+                    state.token = null;
+                }
+            }
+            renderApp();
+            loadData();
+        }
+
+
+        /**
+         * RENDERER ENGINE
+         */
+        function renderApp() {
+            const app = document.getElementById('app');
+            if (state.view === 'login-page') {
+                renderLoginPage(app);
+                return;
+            }
+
+            const isGuest = !state.user;
+            
+            app.innerHTML = `
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-brand text-center">
+                        <div class="mb-2">
+                            <i class="fas fa-building-shield text-accent mb-2" style="font-size: 20px;"></i>
+                            <h5 class="text-uppercase">BUDGET CONTROL</h5>
+                            <p class="small opacity-50 mb-0" style="font-size: 9px; font-weight: 700; letter-spacing: 1px;">SECURITY DIVISION</p>
+                        </div>
+                    </div>
+
+                    <div class="nav-container">
+                        <a class="nav-link-custom ${state.view === 'dashboard' ? 'active' : ''}" onclick="setView('dashboard')">
+                            <i class="fas fa-house-chimney"></i> Dashboard Utama
+                        </a>
+
+                        <a class="nav-link-custom ${state.view === 'ranking' ? 'active' : ''}" onclick="setView('ranking')">
+                            <i class="fas fa-trophy"></i> Performance Rank
+                        </a>
+
+                        <a class="nav-link-custom ${state.view === 'planner' ? 'active' : ''}" onclick="setView('planner')">
+                            <i class="fas fa-calendar-check"></i> Budget Planner 2027
+                        </a>
+
+                        ${!isGuest ? `
+                            <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Operasional</div>
+                            <a class="nav-link-custom ${state.view === 'transaksi' ? 'active' : ''}" onclick="setView('transaksi')">
+                                <i class="fas fa-receipt"></i> Data Transaksi
+                            </a>
+                            <a class="nav-link-custom ${state.view === 'log' ? 'active' : ''}" onclick="setView('log')">
+                                <i class="fas fa-clock-rotate-left"></i> Activity Log
+                            </a>
+                            
+                            ${state.user.role === 'ADMIN' ? `
+                                <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Administrator</div>
+                                <a class="nav-link-custom ${state.view === 'pagu' ? 'active' : ''}" onclick="setView('pagu')">
+                                    <i class="fas fa-database"></i> Master Data & Pagu
+                                </a>
+                            ` : ''}
+                            
+                            <a class="nav-link-custom ${state.view === 'profil' ? 'active' : ''}" onclick="setView('profil')">
+                                <i class="fas fa-user-shield"></i> Security Profile
+                            </a>
+                        ` : `
+                            <div class="mt-4 mb-2 ps-3 small opacity-50 fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 1px;">Akses Tamu</div>
+                            <a class="nav-link-custom" onclick="setView('login-page')">
+                                <i class="fas fa-lock"></i> Login Authorized
+                            </a>
+                        `}
+                    </div>
+                    
+                    <div class="sidebar-footer">
+                        ${!isGuest ? `
+                            <div class="d-flex align-items-center mb-3 p-3 rounded-4" style="background: rgba(255,255,255,0.05);">
+                                <div class="bg-accent rounded-circle p-2 me-3 shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user text-dark" style="font-size: 16px;"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="small fw-bold mb-0 text-truncate text-white" style="font-size: 12px;">${state.user.nama}</p>
+                                    <p class="small opacity-50 mb-0" style="font-size: 9px;">${state.user.role} ACCESS</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-light btn-sm w-100 py-2 fw-bold opacity-75" onclick="logout()" style="font-size: 10px; border-radius: 12px; border-color: rgba(255,255,255,0.2);">
+                                <i class="fas fa-power-off me-2"></i> SIGN OUT
+                            </button>
+                        ` : `
+                            <p class="small opacity-50 text-center mb-0" style="font-size: 10px;">V3.5 PREMIUM EDITION</p>
+                        `}
+                    </div>
+                </div>
+
+
+                <div class="main-content">
+                    <nav class="top-navbar">
+                        <div class="d-flex align-items-center">
+                            <button class="btn d-lg-none me-3" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></button>
+                            <h6 class="fw-bold mb-0 text-uppercase d-none d-sm-block" style="font-size: 11px; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">BUDGET MONITORING SYSTEM 2026</h6>
+
+                        </div>
+
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="text-end d-none d-md-block">
+                                <p id="realtimeClock" class="mb-0"></p>
+                                <p class="small text-accent mb-0 fw-bold" style="font-size: 9px; letter-spacing: 1px;">KONEKSI AMAN</p>
+                            </div>
+                            ${isGuest ? `
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" onclick="setView('login-page')" style="background: var(--primary); border: none; border-radius: 12px; font-size: 12px;">MASUK SISTEM</button>
+                            ` : ''}
+                        </div>
+                    </nav>
+                    
+                    <div id="pageContainer"></div>
+                </div>
+            `;
+            
+            startClock();
+            renderView();
+        }
+
+        function setView(v) {
+            state.view = v;
+            renderApp();
+            loadData();
+        }
+
+        function renderView() {
+            const container = document.getElementById('pageContainer');
+            if (!container) return;
+
+            switch(state.view) {
+                case 'dashboard': renderDashboard(container); break;
+                case 'ranking': renderRanking(container); break;
+                case 'planner': renderPlanner(container); break;
+                case 'transaksi': renderTransaksi(container); break;
+                case 'log': renderLog(container); break;
+                case 'pagu': renderPagu(container); break;
+                case 'profil': renderProfil(container); break;
+            }
+        }
+
+
+        /**
+         * DASHBOARD MODULE
+         */
+        function renderDashboard(el) {
+            el.innerHTML = `
+                <div class="filter-card">
+                    <div class="control-item">
+                        <label class="control-label">Wilayah</label>
+                        <select id="filterWk" class="form-select-pro" onchange="state.filters.wk=this.value; renderDashboardContent()">
+                            <option value="ALL">Semua</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Item Budget</label>
+                        <select id="filterItem" class="form-select-pro" onchange="state.filters.item=this.value; renderDashboardContent()">
+                            <option value="ALL">Semua</option>
+                            <option value="BS-8">BS-8</option>
+                            <option value="BS-11">BS-11</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">LINE ANGGARAN</label>
+                        <select id="filterDetail" class="form-select-pro" onchange="state.filters.detail=this.value; renderDashboardContent()" style="max-width: 160px;">
+                            <option value="ALL">Semua</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Mulai</label>
+                        <select id="filterStart" class="form-select-pro" onchange="state.filters.start=parseInt(this.value); renderDashboardContent()">
+                            ${monthNames.map((m,i)=>`<option value="${i}" ${state.filters.start===i?'selected':''}>${m}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Berakhir</label>
+                        <select id="filterEnd" class="form-select-pro" onchange="state.filters.end=parseInt(this.value); renderDashboardContent()">
+                            ${monthNames.map((m,i)=>`<option value="${i}" ${state.filters.end===i?'selected':''}>${m}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="px-5 mb-3" id="ai-insights-container"></div>
+
+
+
+                <div class="kpi-row">
+                    <div class="kpi-card" style="border-top: 4px solid var(--primary);">
+                        <span class="kpi-label">Alokasi Pagu Total</span>
+                        <h3 class="kpi-value" id="stat-pagu">Rp 0</h3>
+                        <div class="kpi-subtext text-muted">Berdasarkan Filter Terpilih</div>
+                    </div>
+                    <div class="kpi-card" style="border-top: 4px solid #ef4444;">
+                        <span class="kpi-label">Realisasi Berjalan</span>
+                        <h3 class="kpi-value text-danger" id="stat-real">Rp 0</h3>
+                        <div class="kpi-subtext text-danger" id="perc-real">0% Terpakai</div>
+                    </div>
+                    <div class="kpi-card" style="border-top: 4px solid #3b82f6;">
+                        <span class="kpi-label">Sisa Pagu</span>
+                        <h3 class="kpi-value text-primary" id="stat-sisa">Rp 0</h3>
+                        <div class="kpi-subtext text-primary" id="sub-sisa">0% Sisa</div>
+                    </div>
+                    <div class="kpi-card" style="border-top: 4px solid var(--accent);">
+                        <span class="kpi-label">Jumlah Personil</span>
+                        <h3 class="kpi-value text-success" id="stat-4-val">0</h3>
+                        <div class="kpi-subtext text-success" id="sub-stat-4">Seluruh WK</div>
+                    </div>
+                </div>
+
+                <div class="visual-grid">
+                    <div class="viz-card">
+                        <div class="viz-title"><i class="fas fa-map-marked-alt text-primary"></i> Sebaran Realisasi Nasional</div>
+                        <div id="dashMap"></div>
+                    </div>
+                </div>
+
+                <div class="section-label" id="insight-label-text">Rincian Per LINE ANGGARAN</div>
+                <div class="insight-grid" id="categoryCardsContainer"></div>
+            `;
+            initMap();
+            if (state.db) renderDashboardContent();
+        }
+
+        function initMap() {
+            const container = document.getElementById('dashMap');
+            if (!container) return;
+            if (state.map) { state.map.off(); state.map.remove(); }
+            state.map = L.map('dashMap', { center: [-1.0, 116.0], zoom: 5, zoomControl: false });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { opacity: 0.8 }).addTo(state.map);
+            L.control.zoom({ position: 'bottomright' }).addTo(state.map);
+            setTimeout(() => { if(state.map) state.map.invalidateSize(); }, 300);
+        }
+
+        /**
+         * DATA LOGIC
+         */
+        function loadData(callback) {
+            startLoading();
+            const token = state.token;
+
+            if (typeof google === 'undefined') {
+                setTimeout(() => {
+                    state.db = { 
+                        masterWK: [], masterPilihan: [], pagu: [], realisasiInternal: [], 
+                        realisasiInvoice: [], realisasiStakeholder: [], masterJenisTrx: [] 
+                    };
+                    endLoading();
+                    if(state.view === 'dashboard') renderDashboardContent();
+                    populateFilters();
+                    if(callback) callback();
+                }, 800);
+            } else {
+                google.script.run
+                    .withSuccessHandler(res => { 
+                        if (res.error) {
+                            Swal.fire('Sesi Berakhir', res.error, 'warning').then(() => logout());
+                            return;
+                        }
+                        state.db = res; 
+                        endLoading();
+                        if(state.view === 'dashboard') renderDashboardContent();
+                        populateFilters();
+                        if(state.view === 'transaksi') renderTrxTable();
+                        if(state.view === 'pagu') renderPaguTable();
+                        if(callback) callback();
+                    })
+                    .withFailureHandler(() => {
+                        endLoading();
+                        Swal.fire('Error', 'Gagal memuat data dari server', 'error');
+                    })
+                    .getAppData(token);
+            }
+        }
+
+
+        /**
+         * POPULATE FILTERS - UPDATED TO BE MORE STABLE
+         */
+        function populateFilters() {
+            if(!state.db) return;
+            
+            const listWK = state.db?.masterWK || [];
+            const listPilihan = state.db?.masterPilihan || [];
+            const listJenis = state.db?.masterJenisTrx || [];
+
+            // Target Wilayah (Dashboard, Form Transaksi, Modal, Pagu)
+            const wkSelectors = ['filterWk', 'editTrxWK', 'trxWK', 'paguWK'];
+            wkSelectors.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const prefix = id === 'filterWk' ? '<option value="ALL">Semua</option>' : '';
+                    el.innerHTML = prefix + listWK.map(w => `<option value="${w.Nama_WK}">${w.Nama_WK}</option>`).join('');
+                }
+            });
+
+            // Target Line Anggaran (Dashboard, Form Transaksi, Modal, Pagu)
+            const detailSelectors = ['filterDetail', 'editTrxPilihan', 'trxPilihan', 'paguDeskripsi'];
+            detailSelectors.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const prefix = id === 'filterDetail' ? '<option value="ALL">Semua</option>' : '';
+                    el.innerHTML = prefix + listPilihan.map(x => `<option value="${x.Nama_Pilihan}">${x.Nama_Pilihan}</option>`).join('');
+                }
+            });
+
+            // Target Jenis Sistem (Form Transaksi) - BARU: Mencegah hilang setelah submit
+            const typeSelectors = ['trxType'];
+            typeSelectors.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = listJenis.map(j => `<option value="${j.Kategori_Sistem}">${j.Nama_Label}</option>`).join('');
+                }
+            });
+        }
+
+        function renderDashboardContent() {
+            if(!state.db) return;
+            
+            let p = state.db.pagu || [], 
+                r = [...(state.db.realisasiInternal || []), ...(state.db.realisasiInvoice || []), ...(state.db.realisasiStakeholder || [])];
+            
+            if (state.filters.wk !== 'ALL') { p = p.filter(x => x.WK === state.filters.wk); r = r.filter(x => x.WK === state.filters.wk); }
+            if (state.filters.item !== 'ALL') { p = p.filter(x => x.Item === state.filters.item); r = r.filter(x => x.Item === state.filters.item); }
+            if (state.filters.detail !== 'ALL') { p = p.filter(x => x.Deskripsi === state.filters.detail); r = r.filter(x => x.Pilihan_Anggaran === state.filters.detail); }
+            
+            r = r.filter(x => { 
+                const d = new Date(x.Tanggal);
+                return !isNaN(d.getMonth()) && d.getMonth() >= state.filters.start && d.getMonth() <= state.filters.end; 
+            });
+
+            const tP = p.reduce((a,b)=>a+Number(b.Pagu || 0), 0);
+            const tR = r.reduce((a,b)=>a+Number(b.Jumlah || 0), 0);
+            const percUsed = tP > 0 ? (tR/tP)*100 : 0;
+            const percRem = Math.max(0, 100 - percUsed);
+
+            let wkFiltered = state.db.masterWK || [];
+            if (state.filters.wk !== 'ALL') wkFiltered = wkFiltered.filter(x => x.Nama_WK === state.filters.wk);
+            const tPersonnel = wkFiltered.reduce((a,b) => a + Number(b.PERSONNEL_COUNT || 0), 0);
+
+            const elP = document.getElementById('stat-pagu');
+            const elR = document.getElementById('stat-real');
+            const elS = document.getElementById('stat-sisa');
+            const elPr = document.getElementById('perc-real');
+            const elSubSisa = document.getElementById('sub-sisa');
+            const elStat4Val = document.getElementById('stat-4-val');
+            const elSubStat4 = document.getElementById('sub-stat-4');
+            const elLabel = document.getElementById('insight-label-text');
+
+            if(elP) elP.innerText = fmt(tP);
+            if(elR) elR.innerText = fmt(tR);
+            if(elS) elS.innerText = fmt(tP - tR);
+            if(elPr) elPr.innerText = `${percUsed.toFixed(1)}% Terpakai`;
+            if(elSubSisa) elSubSisa.innerText = `${percRem.toFixed(1)}% Sisa`;
+            
+            if(elStat4Val) elStat4Val.innerText = tPersonnel.toLocaleString('id-ID');
+            if(elSubStat4) elSubStat4.innerText = state.filters.wk === 'ALL' ? 'Seluruh WK' : `Wilayah ${state.filters.wk}`;
+            
+            if(elLabel) {
+                elLabel.innerText = state.filters.wk === 'ALL' ? 
+                    'Rincian Per LINE ANGGARAN' : 
+                    `Rincian LINE ANGGARAN Wilayah ${state.filters.wk}`;
+            }
+
+            renderAIInsights(p, r);
+
+
+            requestAnimationFrame(() => {
+                updateMap(p, r);
+                renderCategoryCards(p, r);
+                
+                // Centering logic & Auto-open Popup
+                if (state.filters.wk !== 'ALL' && state.map) {
+                    if (state.filters.item === 'BS-11') {
+                        // Focus on Jakarta for BS-11
+                        const jkt = state.db.masterWK.find(w => w.Nama_WK.toUpperCase() === 'JAKARTA');
+                        if (jkt) {
+                            state.map.setView([parseFloat(jkt.LAT), parseFloat(jkt.LNG)], 8);
+                        }
+                        // Auto-open marker untuk BS-11 (di lokasi JKT)
+                        if (state.markers[state.filters.wk]) {
+                            state.markers[state.filters.wk].openPopup();
+                        }
+                    } else if (state.markers[state.filters.wk]) {
+                        const marker = state.markers[state.filters.wk];
+                        state.map.setView(marker.getLatLng(), 7); 
+                        marker.openPopup();
+                    }
+                } else if (state.filters.wk === 'ALL' && state.map) {
+                    state.map.setView([-1.0, 116.0], 5);
+                }
+            });
+        }
+
+        function renderAIInsights(pagu, realisasi) {
+            const container = document.getElementById('ai-insights-container');
+            if (!container) return;
+
+            let insights = [];
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1; 
+            const isGlobal = state.filters.wk === 'ALL';
+            const TARGET_PERC = 90;
+
+            const totalPagu = pagu.reduce((a,b) => a + Number(b.Pagu || 0), 0);
+            const totalReal = realisasi.reduce((a,b) => a + Number(b.Jumlah || 0), 0);
+            const runRate = totalReal / currentMonth;
+
+            // --- 1. DYNAMIC BENCHMARK DETERMINATION ---
+            let benchmarkMonths = 12;
+            let contextName = "akhir tahun";
+            
+            if (!isGlobal) {
+                const wkProfile = (state.db.masterWK || []).find(w => w.Nama_WK === state.filters.wk);
+                if (wkProfile && wkProfile.CONTRACT_END_DATE) {
+                    const endDate = new Date(wkProfile.CONTRACT_END_DATE);
+                    if (endDate.getFullYear() === today.getFullYear()) {
+                        benchmarkMonths = endDate.getMonth() + 1;
+                        contextName = "akhir masa kontrak";
+                    }
+                }
+            }
+
+            // --- 2. ANALYSIS BY TARGET (ADAPTIVE BENCHMARK) ---
+            if (totalPagu > 0) {
+                const projectedAtEnd = runRate * benchmarkMonths;
+                const projectedPerc = (projectedAtEnd / totalPagu) * 100;
+                
+                if (projectedPerc < TARGET_PERC) {
+                    const shortFall = (totalPagu * (TARGET_PERC/100)) - projectedAtEnd;
+                    insights.push({
+                        type: 'warning', icon: 'fa-gauge-low',
+                        title: `Target Serapan 90% (${contextName.toUpperCase()}): BELUM TERCAPAI`,
+                        text: `Estimasi serapan hingga <b>${contextName}</b> hanya <b>${projectedPerc.toFixed(1)}%</b>. <b>Saran:</b> Diperlukan akselerasi penyerapan minimal <b>${fmtShort(shortFall)}</b> sebelum kontrak berakhir.`
+                    });
+                } else if (projectedPerc > 105) {
+                    insights.push({
+                        type: 'danger', icon: 'fa-triangle-exclamation',
+                        title: `Risiko Defisit Anggaran (${contextName.toUpperCase()})`,
+                        text: `Proyeksi serapan hingga <b>${contextName}</b> mencapai <b>${projectedPerc.toFixed(1)}%</b>. <b>Saran:</b> Segera tinjau kebutuhan amandemen anggaran.`
+                    });
+                } else {
+                    insights.push({
+                        type: 'success', icon: 'fa-circle-check',
+                        title: `Target Serapan 90% (${contextName.toUpperCase()}): ON-TRACK`,
+                        text: `Tren penggunaan saat ini diprediksi mencapai <b>${projectedPerc.toFixed(1)}%</b> di ${contextName}. Anggaran dalam kondisi stabil.`
+                    });
+                }
+            }
+
+
+            // --- 2. REGIONAL CONTRACT AUDIT ---
+            if (!isGlobal && state.filters.wk !== 'ALL') {
+                const wkProfile = (state.db.masterWK || []).find(w => w.Nama_WK === state.filters.wk);
+                if (wkProfile && wkProfile.CONTRACT_END_DATE) {
+                    const endDate = new Date(wkProfile.CONTRACT_END_DATE);
+                    const monthsToContract = Math.max(1, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24 * 30.44)));
+                    const projectedToContractEnd = totalReal + (runRate * monthsToContract);
+                    
+                    if (projectedToContractEnd > totalPagu) {
+                        insights.push({
+                            type: 'danger', icon: 'fa-file-signature',
+                            title: `Peringatan Amandemen: ${state.filters.wk}`,
+                            text: `Sisa anggaran tidak cukup hingga akhir kontrak (<b>${monthsToContract} bln lagi</b>). Estimasi kebutuhan: <b>${fmtShort(projectedToContractEnd)}</b>.`
+                        });
+                    }
+
+                    if (monthsToContract <= 3) {
+                        const nextYearReq = runRate * 12;
+                        insights.push({
+                            type: 'info', icon: 'fa-clipboard-check',
+                            title: `Persiapan Kontrak Baru & Budget 2027`,
+                            text: `Sisa kontrak <b>${monthsToContract} bulan</b>. Estimasi RKA 2027: <b>${fmtShort(nextYearReq)}</b>. <b>Wajib:</b> Lakukan review KPI BUJP ${wkProfile.BUJP_NAME} sekarang.`
+                        });
+                    }
+                }
+            }
+
+            // --- 3. DATA INTEGRITY ---
+            const missingEvidence = realisasi.filter(rx => new Date(rx.Tanggal).getMonth() === today.getMonth() && !rx.Evidence);
+            if (missingEvidence.length > 0) {
+                insights.push({
+                    type: 'secondary', icon: 'fa-file-circle-exclamation',
+                    title: `Audit Bukti Transaksi`,
+                    text: `<b>${missingEvidence.length} item</b> belum memiliki file pendukung. Lengkapi segera untuk validasi penyerapan.`
+                });
+            }
+
+            if (insights.length === 0) {
+                container.innerHTML = `<div class="alert alert-success border-0 shadow-sm d-flex align-items-center" style="border-radius:12px; background:white;"><i class="fas fa-check-circle text-success me-3" style="font-size:24px;"></i><div><p class="mb-0 fw-bold text-success">Sistem Normal</p><p class="small text-muted mb-0">Tidak ada anomali yang terdeteksi.</p></div></div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="viz-card mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);">
+                    <div class="viz-title mb-3" style="color:var(--primary);"><i class="fas fa-robot-astronaut"></i> AI STRATEGIC PERFORMANCE MONITORING</div>
+                    <div class="row g-3">
+                        ${insights.map(ins => `
+                            <div class="col-md-6">
+                                <div class="d-flex p-3 rounded-4 bg-white shadow-sm border-start border-4 border-${ins.type}" style="height:100%;">
+                                    <div class="me-3 mt-1"><i class="fas ${ins.icon} text-${ins.type}" style="font-size:18px;"></i></div>
+                                    <div><h6 class="fw-bold mb-1" style="font-size:12px;">${ins.title}</h6><p class="small text-muted mb-0" style="font-size:11px;">${ins.text}</p></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+
+
+
+
+
+
+
+        function renderCategoryCards(pData, rData) {
+            const container = document.getElementById('categoryCardsContainer');
+            if (!container || !state.db.masterPilihan) return;
+            
+            let html = '';
+            state.db.masterPilihan.forEach((item, index) => {
+                const name = item.Nama_Pilihan;
+                const pVal = pData.filter(x => x.Deskripsi === name).reduce((a,b) => a + Number(b.Pagu || 0), 0);
+                const rVal = rData.filter(x => x.Pilihan_Anggaran === name).reduce((a,b) => a + Number(b.Jumlah || 0), 0);
+                
+                if (state.filters.wk !== 'ALL' && pVal <= 0) return;
+
+                const perc = pVal > 0 ? (rVal / pVal) * 100 : 0;
+                const colorClass = perc > 90 ? 'danger' : (perc > 60 ? 'warning' : 'success');
+                const colorHex = perc > 90 ? '#ef4444' : (perc > 60 ? '#f59e0b' : '#10b981');
+
+                html += `
+                    <div class="insight-card shadow-sm">
+                        <div class="insight-header">
+                            <h5 class="insight-title">${name}</h5>
+                            <span class="insight-perc text-${colorClass}">${perc.toFixed(1)}%</span>
+                        </div>
+                        <div class="insight-stats">
+                            <div>
+                                <span class="insight-stat-lbl">Alokasi</span>
+                                <span class="insight-stat-val text-dark">${fmtShort(pVal)}</span>
+                            </div>
+                            <div>
+                                <span class="insight-stat-lbl">Serapan</span>
+                                <span class="insight-stat-val text-${colorClass}">${fmtShort(rVal)}</span>
+                            </div>
+                        </div>
+                        <div style="height: 50px; margin-bottom: 10px;">
+                            <canvas id="spark-${index}"></canvas>
+                        </div>
+                        <div class="progress" style="height: 6px; border-radius: 10px; background: #f1f5f9;">
+                            <div class="progress-bar bg-${colorClass}" style="width: ${Math.min(perc, 100)}%"></div>
+                        </div>
+                    </div>
+                `;
+
+                requestAnimationFrame(() => {
+                    const ctx = document.getElementById(`spark-${index}`);
+                    if (!ctx) return;
+                    if (state.charts.categories[index]) state.charts.categories[index].destroy();
+                    const dummyHistory = [rVal*0.3, rVal*0.7, rVal*0.5, rVal*0.9, rVal];
+                    state.charts.categories[index] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: [1,2,3,4,5],
+                            datasets: [{
+                                data: dummyHistory,
+                                borderColor: colorHex,
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: true,
+                                backgroundColor: colorHex + '08',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 400 },
+                            plugins: { legend: { display: false } },
+                            scales: { x: { display: false }, y: { display: false } }
+                        }
+                    });
+                });
+            });
+            container.innerHTML = html || '<div class="col-12 text-center py-5 text-muted small">Tidak ada data untuk filter ini.</div>';
+        }
+
+        function updateMap(pData, rData) {
+            if (!state.map) return;
+            Object.values(state.markers).forEach(m => state.map.removeLayer(m));
+            state.markers = {};
+
+            const isBS11Filter = state.filters.item === 'BS-11';
+            const isWKSelected = state.filters.wk !== 'ALL';
+            
+            // Cari profil data Jakarta untuk informasi statis (BUJP, Personil, Kontrak)
+            const jktData = state.db.masterWK.find(w => w.Nama_WK.toUpperCase() === 'JAKARTA') || {};
+
+            (state.db.masterWK || []).forEach(wk => {
+                let lat = parseFloat(wk.LAT), lng = parseFloat(wk.LNG);
+                if (isNaN(lat) || isNaN(lng)) return;
+
+                // LOGIKA KHUSUS BS-11: Pindahkan koordinat ke Jakarta jika Wilayah dipilih
+                if (isBS11Filter && isWKSelected) {
+                    if (jktData.LAT) {
+                        lat = parseFloat(jktData.LAT);
+                        lng = parseFloat(jktData.LNG);
+                    }
+                    // Jika BS-11 wilayah aktif, sembunyikan marker lain
+                    if (wk.Nama_WK !== state.filters.wk) return;
+                }
+
+                // Kalkulasi Serapan (%) selalu berpatokan pada Wilayah terpilih (sesuai pData/rData yang sudah difilter)
+                const pVal = pData.filter(x => x.WK === wk.Nama_WK).reduce((a,b) => a + Number(b.Pagu || 0), 0);
+                const rVal = rData.filter(x => x.WK === wk.Nama_WK).reduce((a,b) => a + Number(b.Jumlah || 0), 0);
+                const perc = pVal > 0 ? (rVal / pVal) * 100 : 0;
+                
+                // Tentukan sumber data profil (Jakarta jika BS-11, Wilayah Asli jika BS-8)
+                const profileSource = (isBS11Filter && isWKSelected) ? jktData : wk;
+                
+                const endDate = new Date(profileSource.CONTRACT_END_DATE);
+                const today = new Date();
+                const diffTime = endDate.getTime() - today.getTime();
+                const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30.44)); 
+                const displayRemaining = diffMonths > 0 ? `${diffMonths} Bulan` : 'Berakhir';
+
+                let color = '#10b981';
+                
+                // LOGIKA REVISI: Wilayah Korinci Baru & Tunas Energi selalu Biru
+                const currentWKName = wk.Nama_WK ? wk.Nama_WK.trim().toUpperCase() : "";
+                if (currentWKName === 'KORINCI BARU' || currentWKName === 'TUNAS ENERGI') {
+                    color = '#3b82f6'; // Warna Biru
+                } else {
+                    if (diffMonths <= 1) color = '#000000';
+                    else if (diffMonths <= 2) color = '#ef4444';
+                    else if (diffMonths <= 3) color = '#f59e0b';
+                }
+                
+                const pulseHtml = `
+                    <div class="custom-pulse-container">
+                        <div class="pulse-dot" style="background: ${color}; box-shadow: 0 0 8px ${color};"></div>
+                        <div class="pulse-ring" style="background: ${color};"></div>
+                    </div>`;
+                const icon = L.divIcon({ className: 'leaflet-pulse-icon', html: pulseHtml, iconSize: [14, 14], iconAnchor: [7, 7] });
+
+                const day = String(endDate.getDate()).padStart(2, '0');
+                const monthLabel = monthShortNames[endDate.getMonth()];
+                const yearShort = String(endDate.getFullYear()).slice(-2);
+                const formattedDate = !isNaN(endDate.getTime()) ? `${day} ${monthLabel} ${yearShort}` : '-';
+
+                const marker = L.marker([lat, lng], { icon }).addTo(state.map);
+                
+                // Jika BS-11 dipilih wilayah tertentu, BUJP pasti PTC (Sesuai Jakarta Data)
+                const displayBUJP = (isBS11Filter) ? (profileSource.BUJP_NAME || 'PTC') : (wk.BUJP_NAME || '-');
+                const popupTitle = (isBS11Filter && isWKSelected) ? state.filters.wk : wk.Nama_WK;
+                
+                marker.bindPopup(`
+                    <div style="min-width: 180px; padding: 5px; font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <h6 class="fw-bold mb-0 text-primary" style="font-size: 13px;">${popupTitle}</h6>
+                        <hr style="margin: 6px 0; opacity: 0.1;">
+                        <div class="mb-2">
+                            <span class="d-block small text-muted fw-bold" style="font-size: 9px; text-transform: uppercase;">BUJP</span>
+                            <span class="d-block fw-bold text-dark" style="font-size: 11px;">${displayBUJP}</span>
+                        </div>
+                        
+                        <div class="row g-0 mb-2">
+                            <div class="col-6">
+                                <span class="d-block small text-muted fw-bold" style="font-size: 9px; text-transform: uppercase;">Personil</span>
+                                <span class="d-block fw-bold text-dark" style="font-size: 11px;">${profileSource.PERSONNEL_COUNT || 0}</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="d-block small text-muted fw-bold" style="font-size: 9px; text-transform: uppercase;">Serapan</span>
+                                <span class="d-block fw-bold text-${perc > 90 ? 'danger' : 'success'}" style="font-size: 11px;">${perc.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-6">
+                                <span class="d-block small text-muted fw-bold" style="font-size: 9px; text-transform: uppercase;">Selesai</span>
+                                <span class="d-block fw-bold text-dark" style="font-size: 11px;">${formattedDate}</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="d-block small text-muted fw-bold" style="font-size: 9px; text-transform: uppercase;">Sisa</span>
+                                <span class="d-block fw-bold text-primary" style="font-size: 11px;">${displayRemaining}</span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                state.markers[wk.Nama_WK] = marker;
+            });
+        }
+
+        /**
+         * TRANSAKSI MODULE
+         */
+        function renderTransaksi(el) {
+            el.innerHTML = `
+                <div class="dashboard-controls"><h5 class="fw-bold mb-0 text-primary">Manajemen Transaksi Realisasi</h5></div>
+                <div class="p-4">
+                    <div class="kpi-card mb-4">
+                        <h6 class="fw-bold mb-3 small"><i class="fas fa-plus-circle me-2 text-primary"></i>Entri Data Baru</h6>
+                        <form id="trxForm" onsubmit="handleTrxSubmit(event)">
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Jenis Sistem</label>
+                                    <select name="type" id="trxType" class="form-select form-select-sm" required></select>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Tanggal</label>
+                                    <input type="date" name="tanggal" class="form-control form-control-sm" required value="${new Date().toISOString().split('T')[0]}">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Wilayah</label>
+                                    <select name="WK" id="trxWK" class="form-select form-select-sm" required></select>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">BUJP</label>
+                                    <input name="BUJP" id="trxBUJPInput" class="form-control form-control-sm" placeholder="Nama BUJP" required>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Uraian / No. Invoice</label>
+                                    <input name="Keterangan" class="form-control form-control-sm" placeholder="Keterangan Transaksi" required>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Item BS</label>
+                                    <select name="Item" id="trxItemSelect" class="form-select form-select-sm" onchange="checkBS11Logic(this.value)">
+                                        <option value="BS-8">BS-8</option>
+                                        <option value="BS-11">BS-11</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">LINE ANGGARAN</label>
+                                    <select name="Pilihan_Anggaran" id="trxPilihan" class="form-select form-select-sm" required></select>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Nominal Realisasi</label>
+                                    <input type="number" name="Jumlah" class="form-control form-control-sm" placeholder="0" required>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="control-label">Lampiran Bukti</label>
+                                    <input type="file" id="evFile" class="form-control form-control-sm" accept=".pdf,.jpg,.png">
+                                </div>
+                                <div class="col-12 text-end mt-2">
+                                    <button type="submit" id="btnTrxSubmit" class="btn btn-primary fw-bold px-4" style="border-radius: 10px;">
+                                        <i class="fas fa-save me-2"></i> SIMPAN DATA
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="viz-card overflow-hidden p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" style="font-size: 13px;">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="px-4">TANGGAL</th>
+                                        <th>WILAYAH</th>
+                                        <th>URAIAN</th>
+                                        <th>ITEM</th>
+                                        <th class="text-end">NOMINAL</th>
+                                        <th class="text-center">BUKTI</th>
+                                        <th class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trxBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            populateFilters(); 
+            renderTrxTable();
+        }
+
+        // Helper untuk memaksa BUJP PTC jika BS-11 di input
+        function checkBS11Logic(val) {
+            const bujpInput = document.getElementById('trxBUJPInput');
+            if (val === 'BS-11' && bujpInput) {
+                bujpInput.value = 'PTC';
+                bujpInput.readOnly = true;
+            } else if (bujpInput) {
+                bujpInput.readOnly = false;
+            }
+        }
+
+        function renderTrxTable() {
+            const body = document.getElementById('trxBody');
+            if(!body || !state.db) return;
+            const all = [
+                ...(state.db.realisasiInternal || []).map(x => ({...x, sType: 'internal'})),
+                ...(state.db.realisasiInvoice || []).map(x => ({...x, sType: 'invoice'})),
+                ...(state.db.realisasiStakeholder || []).map(x => ({...x, sType: 'stakeholder'}))
+            ].sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal));
+            
+            body.innerHTML = all.length ? all.map(t => {
+                const ket = t.No_Invoice || t.Keterangan || "";
+                return `
+                <tr>
+                    <td class="px-4">${t.Tanggal}</td>
+                    <td class="fw-bold">${t.WK}</td>
+                    <td>${ket}</td>
+                    <td><span class="badge bg-light text-dark border">${t.Item}</span></td>
+                    <td class="text-end fw-bold text-primary">${fmt(t.Jumlah)}</td>
+                    <td class="text-center">${t.Evidence ? `<a href="${t.Evidence}" target="_blank" class="text-success"><i class="fas fa-file-invoice"></i></a>` : '-'}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm text-primary me-1" title="Edit" onclick="openEditTrx('${t.ID}','${t.sType}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm text-danger" title="Hapus" onclick="delData('${t.ID}','${t.sType}')"><i class="fas fa-trash-can"></i></button>
+                    </td>
+                </tr>`}).join('') : '<tr><td colspan="7" class="text-center py-5 text-muted">Belum ada transaksi tercatat.</td></tr>';
+        }
+
+        /**
+         * RANKING MODULE
+         */
+        function renderRanking(el) {
+            if(!state.db) return;
+            const listWK = state.db.masterWK || [];
+            const pagu = state.db.pagu || [];
+            const real = [...(state.db.realisasiInternal || []), ...(state.db.realisasiInvoice || []), ...(state.db.realisasiStakeholder || [])];
+
+            const stats = listWK.map(wk => {
+                const pVal = pagu.filter(x => x.WK === wk.Nama_WK).reduce((a,b)=>a+Number(b.Pagu || 0), 0);
+                const rVal = real.filter(x => x.WK === wk.Nama_WK).reduce((a,b)=>a+Number(b.Jumlah || 0), 0);
+                const perc = pVal > 0 ? (rVal / pVal) * 100 : 0;
+                return { name: wk.Nama_WK, bujp: wk.BUJP_NAME, pVal, rVal, perc };
+            }).sort((a,b) => b.perc - a.perc);
+
+            el.innerHTML = `
+                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-trophy me-2 text-accent"></i> PERFORMANCE RANKING (ABSORPTION)</h6></div>
+                <div class="p-5">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="viz-card">
+                                <div class="viz-title">WILAYAH KERJA PERFORMANCE LEADERBOARD</div>
+                                ${stats.map((s, i) => `
+                                    <div class="rank-item">
+                                        <div class="rank-num ${i < 3 ? 'gold' : ''}">${i + 1}</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold text-dark">${s.name}</span>
+                                                <span class="fw-bold ${s.perc > 90 ? 'text-success' : 'text-danger'}" style="font-size:14px;">${s.perc.toFixed(1)}%</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px; border-radius:10px;">
+                                                <div class="progress-bar ${s.perc > 90 ? 'bg-success' : 'bg-accent'}" style="width: ${Math.min(s.perc, 100)}%"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-1 small opacity-50">
+                                                <span>BUJP: ${s.bujp}</span>
+                                                <span>Serapan: ${fmtShort(s.rVal)} / ${fmtShort(s.pVal)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="kpi-card mb-4" style="background:var(--primary-dark); color:white;">
+                                <h6 class="text-accent fw-bold mb-4">INSIGHT REWARD & PUNISHMENT</h6>
+                                <p class="small opacity-75">Wilayah dengan serapan di atas 90% diprioritaskan untuk pemenuhan fasilitas tambahan di tahun anggaran berikutnya.</p>
+                                <hr class="opacity-25">
+                                <p class="small opacity-75">Wilayah dengan serapan di bawah 60% akan mendapatkan surat teguran dan audit performa BUJP operasional.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * BUDGET PLANNER MODULE
+         */
+        function renderPlanner(el) {
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const pagu = state.db.pagu || [];
+            const real = [...(state.db.realisasiInternal || []), ...(state.db.realisasiInvoice || []), ...(state.db.realisasiStakeholder || [])];
+            
+            const totalPagu = pagu.reduce((a,b)=>a+Number(b.Pagu||0), 0);
+            const totalReal = real.reduce((a,b)=>a+Number(b.Jumlah||0), 0);
+            const runRate = totalReal / currentMonth;
+            const nextYearEst = runRate * 12 * 1.05; // Estimate with 5% inflation
+
+            el.innerHTML = `
+                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-calendar-check me-2 text-accent"></i> BUDGET PLANNER & RKA 2027 SIMULATOR</h6></div>
+                <div class="p-5">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="kpi-card h-100">
+                                <span class="kpi-label">Pagu Berjalan 2026</span>
+                                <div class="kpi-value text-dark">${fmtShort(totalPagu)}</div>
+                                <p class="small text-muted mt-2">Baseline anggaran operasional saat ini.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="kpi-card h-100">
+                                <span class="kpi-label">Run-Rate Realisasi</span>
+                                <div class="kpi-value text-primary">${fmtShort(runRate)}</div>
+                                <p class="small text-muted mt-2">Rata-rata pengeluaran per bulan.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="kpi-card h-100" style="border:2px solid var(--accent);">
+                                <span class="kpi-label">Proyeksi RKA 2027</span>
+                                <div class="kpi-value" style="color:var(--accent);">${fmtShort(nextYearEst)}</div>
+                                <p class="small text-muted mt-2">Estimasi kebutuhan (Run-rate x 12 + 5% Buffer).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="viz-card mt-4">
+                        <div class="viz-title">SIMULASI PENYESUAIAN ANGGARAN 2027</div>
+                        <p class="small text-muted mb-4">Gunakan tool ini untuk memprediksi kebutuhan anggaran jika terjadi penambahan personel atau eskalasi biaya.</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-2">Estimasi Eskalasi Biaya (%)</label>
+                                <input type="range" class="form-range" min="0" max="20" step="1" value="5" oninput="document.getElementById('eskalasiVal').innerText=this.value+'%'; updateSim(this.value)">
+                                <span id="eskalasiVal" class="fw-bold text-primary">5%</span>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 rounded-4 bg-light text-center">
+                                    <span class="small text-muted d-block mb-1">TOTAL USULAN RKA 2027</span>
+                                    <h4 id="simResult" class="fw-bold text-success mb-0">${fmtShort(nextYearEst)}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.updateSim = (val) => {
+                const res = runRate * 12 * (1 + (parseInt(val)/100));
+                document.getElementById('simResult').innerText = fmtShort(res);
+            };
+        }
+
+        /**
+         * ACTIVITY LOG MODULE
+         */
+        function renderLog(el) {
+            const all = [
+                ...(state.db.realisasiInternal || []).map(x => ({...x, sType: 'internal'})),
+                ...(state.db.realisasiInvoice || []).map(x => ({...x, sType: 'invoice'})),
+                ...(state.db.realisasiStakeholder || []).map(x => ({...x, sType: 'stakeholder'}))
+            ].sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal)).slice(0, 30);
+
+            el.innerHTML = `
+                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-clock-rotate-left me-2 text-accent"></i> RECENT ACTIVITY LOG</h6></div>
+                <div class="p-5">
+                    <div class="viz-card p-0 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="px-4 py-3 small fw-bold">WAKTU</th>
+                                        <th class="py-3 small fw-bold">WILAYAH</th>
+                                        <th class="py-3 small fw-bold">URAIAN TRANSAKSI</th>
+                                        <th class="py-3 small fw-bold text-end">NOMINAL</th>
+                                        <th class="py-3 small fw-bold text-center">STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${all.map(t => `
+                                        <tr>
+                                            <td class="px-4 py-3 small text-muted">${t.Tanggal}</td>
+                                            <td class="py-3 small fw-bold">${t.WK}</td>
+                                            <td class="py-3 small">${t.Keterangan || t.No_Invoice}</td>
+                                            <td class="py-3 small text-end fw-bold">${fmtShort(t.Jumlah)}</td>
+                                            <td class="py-3 text-center"><span class="badge bg-success-subtle text-success border border-success-subtle px-3" style="font-size:10px;">TERCATAT</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * PAGU MODULE - UPDATED: REMOVED BUJP
+         */
+        function renderPagu(el) {
+            el.innerHTML = `
+                <div class="dashboard-controls"><h6 class="fw-bold mb-0" style="color:var(--primary); letter-spacing:1px;"><i class="fas fa-database me-2 text-accent"></i> MASTER DATA & KONFIGURASI PAGU 2026</h6></div>
+
+                <div class="p-4">
+                    <div class="kpi-card mb-4" style="border-top: 4px solid var(--accent);">
+                        <h6 class="fw-bold mb-3 small"><i class="fas fa-vault me-2 text-success"></i>Atur Pagu Baru</h6>
+                        <form id="paguForm" onsubmit="handlePaguSubmit(event)">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="control-label">Wilayah Kerja</label>
+                                    <select name="WK" id="paguWK" class="form-select form-select-sm" required></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Item Budget</label>
+                                    <select name="Item" class="form-select form-select-sm">
+                                        <option value="BS-8">BS-8</option>
+                                        <option value="BS-11">BS-11</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label">LINE ANGGARAN</label>
+                                    <select name="Deskripsi" id="paguDeskripsi" class="form-select form-select-sm" required></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label">Pagu Master (Rp)</label>
+                                    <input type="number" name="Pagu" class="form-control form-control-sm" required placeholder="0">
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" id="btnPaguSubmit" class="btn btn-success fw-bold px-4" style="border-radius: 10px;">SIMPAN PAGU</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="viz-card overflow-hidden p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" style="font-size: 13px;">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="px-4">WILAYAH</th>
+                                        <th>ITEM</th>
+                                        <th>LINE ANGGARAN</th>
+                                        <th class="text-end">PAGU MASTER</th>
+                                        <th class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paguBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>`;
+            populateFilters(); 
+            renderPaguTable();
+        }
+
+        function renderPaguTable() {
+            const body = document.getElementById('paguBody');
+            if(!body || !state.db?.pagu) return;
+            body.innerHTML = state.db.pagu.map(p => `
+                <tr>
+                    <td class="px-4 fw-bold">${p.WK}</td>
+                    <td><span class="badge bg-light text-dark">${p.Item}</span></td>
+                    <td>${p.Deskripsi}</td>
+                    <td class="text-end fw-bold text-success">${fmt(p.Pagu)}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm text-danger" onclick="delPagu('${p.ID}')"><i class="fas fa-trash-can"></i></button>
+                    </td>
+                </tr>`).join('') || '<tr><td colspan="5" class="text-center py-5 text-muted">Data pagu kosong.</td></tr>';
+        }
+
+        /**
+         * LOGIKA EDIT TRANSAKSI (DENGAN MODAL)
+         */
+        function openEditTrx(id, sType) {
+            let data = null;
+            if (sType === 'internal') data = state.db.realisasiInternal.find(x => x.ID === id);
+            else if (sType === 'invoice') data = state.db.realisasiInvoice.find(x => x.ID === id);
+            else if (sType === 'stakeholder') data = state.db.realisasiStakeholder.find(x => x.ID === id);
+
+            if (!data) return;
+
+            populateFilters(); 
+
+            document.getElementById('editTrxId').value = id;
+            document.getElementById('editTrxType').value = sType;
+            document.getElementById('editTrxDate').value = data.Tanggal;
+            document.getElementById('editTrxWK').value = data.WK;
+            document.getElementById('editTrxBUJP').value = data.BUJP;
+            document.getElementById('editTrxKet').value = data.No_Invoice || data.Keterangan || "";
+            document.getElementById('editTrxItem').value = data.Item;
+            document.getElementById('editTrxPilihan').value = data.Pilihan_Anggaran;
+            document.getElementById('editTrxJumlah').value = data.Jumlah;
+
+            const modalEl = document.getElementById('modalEditTrx');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        async function handleTrxEditSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('btnTrxUpdate');
+            const id = document.getElementById('editTrxId').value;
+            const sType = document.getElementById('editTrxType').value;
+            const payload = Object.fromEntries(new FormData(form));
+            const fileInput = document.getElementById('editTrxFile');
+
+            try {
+                btn.disabled = true;
+                startLoading();
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const base64 = await new Promise((resolve, reject) => {
+                        const rd = new FileReader();
+                        rd.readAsDataURL(file);
+                        rd.onload = () => resolve(rd.result);
+                        rd.onerror = () => reject(new Error('Gagal membaca file'));
+                    });
+                    payload.fileContent = base64.split(',')[1];
+                    payload.fileName = file.name;
+                    payload.mimeType = file.type;
+                }
+
+                if (typeof google === 'undefined') {
+                    setTimeout(() => {
+                        endLoading();
+                        btn.disabled = false;
+                        bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide();
+                        Swal.fire('Sukses', 'Data berhasil diperbarui (Demo)', 'success');
+                        loadData();
+                    }, 1000);
+                } else {
+                    google.script.run
+                        .withSuccessHandler(res => {
+                            endLoading();
+                            btn.disabled = false;
+                            if (res && res.success) {
+                                bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide();
+                                Swal.fire('Berhasil', 'Transaksi telah diperbarui', 'success');
+                                loadData();
+                            } else {
+                                Swal.fire('Gagal', res.message, 'error');
+                            }
+                        })
+                        .withFailureHandler(err => {
+                            endLoading();
+                            btn.disabled = false;
+                            Swal.fire('Error', err.toString(), 'error');
+                        })
+                        .updateTransaction(id, sType, payload, state.user);
+                }
+            } catch (err) {
+                endLoading();
+                btn.disabled = false;
+                Swal.fire('Error', err.message, 'error');
+            }
+        }
+
+        /**
+         * HANDLERS ENTRI BARU
+         */
+        async function handleTrxSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('btnTrxSubmit');
+            const data = Object.fromEntries(new FormData(form));
+            const fileInput = document.getElementById('evFile');
+            
+            try {
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire('Ukuran Terlalu Besar', 'Maksimal ukuran file bukti adalah 2MB.', 'warning');
+                        return;
+                    }
+                    if (btn) btn.disabled = true;
+                    startLoading();
+                    const base64 = await new Promise((resolve, reject) => {
+                        const rd = new FileReader();
+                        rd.readAsDataURL(file);
+                        rd.onload = () => resolve(rd.result);
+                        rd.onerror = () => reject(new Error('Gagal membaca file'));
+                    });
+                    data.fileContent = base64.split(',')[1];
+                    data.fileName = file.name;
+                    data.mimeType = file.type;
+                } else {
+                    if (btn) btn.disabled = true;
+                    startLoading();
+                }
+
+                if (typeof google === 'undefined') {
+                    setTimeout(() => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Sukses', 'Simpan data demo', 'success'); form.reset(); loadData(); }, 1000);
+                } else {
+                    google.script.run.withSuccessHandler(res => {
+                        endLoading();
+                        if (btn) btn.disabled = false;
+                        if(res && res.success) { Swal.fire('Berhasil', 'Transaksi dicatat', 'success'); form.reset(); loadData(); }
+                        else Swal.fire('Gagal', res.message, 'error');
+                    }).withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); })
+                    .saveTransaction(data.type, data, state.token);
+                }
+            } catch (err) { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.message, 'error'); }
+        }
+
+
+        function handlePaguSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form));
+            startLoading();
+            if (typeof google === 'undefined') { 
+                setTimeout(() => { endLoading(); Swal.fire('Sukses', 'Data pagu diperbarui', 'success'); form.reset(); loadData(); }, 800); 
+            } else {
+                google.script.run.withSuccessHandler(res => {
+                    endLoading();
+                    if(res && res.success) { Swal.fire('Berhasil', 'Pagu diperbarui', 'success'); form.reset(); loadData(); }
+                    else Swal.fire('Gagal', res.message, 'error');
+                }).saveMasterPagu(data, state.token);
+            }
+        }
+
+
+        /**
+         * OTHER SCREENS
+         */
+        function renderProfil(el) {
+            el.innerHTML = `
+                <div class="p-4 d-flex justify-content-center">
+                    <div class="kpi-card text-center" style="max-width: 500px; width: 100%;">
+                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user-shield fa-3x text-white"></i>
+                        </div>
+                        <h4 class="fw-extrabold mb-1">${state.user.nama}</h4>
+                        <p class="text-accent small fw-bold text-uppercase mb-4" style="letter-spacing: 2px;">OTORITAS ${state.user.role}</p>
+                        <hr class="mb-4">
+                        <form onsubmit="handleProfileUpdate(event)">
+                            <div class="mb-3 text-start">
+                                <label class="control-label">Nama Pengguna</label>
+                                <input name="nama" class="form-control" value="${state.user.nama}" required style="border-radius: 10px;">
+                            </div>
+                            <div class="mb-3 text-start">
+                                <label class="control-label">ID Username</label>
+                                <p class="fw-bold text-dark mb-0">${state.user.username}</p>
+                            </div>
+                            <div class="mb-3 text-start">
+                                <label class="control-label">Sektor Akses</label>
+                                <p class="fw-bold text-primary mb-0">${state.user.wkAccess}</p>
+                            </div>
+                            <div class="mb-4 text-start">
+                                <label class="control-label">Konfirmasi Kata Sandi Baru</label>
+                                <input type="password" name="password" class="form-control" placeholder="Biarkan kosong jika tidak diubah" style="border-radius: 10px;">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold py-3 shadow-sm" style="border-radius: 14px;">
+                                PERBARUI IDENTITAS
+                            </button>
+                            <button type="button" class="btn btn-outline-danger w-100 mt-3 fw-bold py-2" onclick="logout()" style="border-radius: 14px;">
+                                LOGOUT
+                            </button>
+                        </form>
+                    </div>
+                </div>`;
+        }
+
+        function handleProfileUpdate(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            startLoading();
+            if (typeof google === 'undefined') { 
+                setTimeout(() => { 
+                    endLoading(); 
+                    state.user.nama = data.nama; 
+                    renderApp(); 
+                    Swal.fire('Sukses', 'Profil diperbarui (Demo)', 'success');
+                }, 800); 
+            } else { 
+                google.script.run.withSuccessHandler(res => { 
+                    endLoading(); 
+                    if(res && res.success) { 
+                        state.user.nama = res.newName || data.nama; 
+                        localStorage.setItem('budget_session_2026', JSON.stringify(state.user)); 
+                        renderApp(); 
+                        Swal.fire('Berhasil', 'Informasi profil diperbarui', 'success');
+                    } else {
+                        Swal.fire('Gagal', res.message, 'error');
+                    }
+                }).updateUserProfile(data, state.token); 
+            }
+        }
+
+
+        function renderLoginPage(el) {
+            el.innerHTML = `
+                <div style="background:linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+                    <div class="bg-white p-5 rounded-4 shadow-lg" style="max-width:400px; width:100%">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-shield-halved fa-3x text-accent mb-3"></i>
+                            <h4 class="fw-bold">MASUK SISTEM</h4>
+                        </div>
+                        <form onsubmit="handleLogin(event)">
+                            <div class="mb-3"><label class="small fw-bold">Username</label><input name="username" class="form-control" required></div>
+                            <div class="mb-4"><label class="small fw-bold">Password</label><input type="password" name="password" class="form-control" required></div>
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">LOGIN</button>
+                            <button type="button" class="btn btn-link w-100 mt-3 text-muted small" onclick="setView('dashboard')">KEMBALI KE BERANDA</button>
+                        </form>
+                    </div>
+                </div>`;
+        }
+
+        /**
+         * UTILS
+         */
+        function handleLogin(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            startLoading();
+            if (typeof google === 'undefined') {
+                setTimeout(() => { 
+                    endLoading(); 
+                    if(data.username === 'admin') { 
+                        state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; 
+                        state.token = 'demo-token';
+                        localStorage.setItem('budget_session_2026', JSON.stringify(state.user));
+                        localStorage.setItem('budget_token_2026', state.token);
+                        setView('transaksi'); 
+                    } 
+                }, 1000);
+            } else {
+                google.script.run.withSuccessHandler(res => {
+                    endLoading();
+                    if (res && res.success) { 
+                        localStorage.setItem('budget_session_2026', JSON.stringify(res.user)); 
+                        localStorage.setItem('budget_token_2026', res.token);
+                        state.user = res.user; 
+                        state.token = res.token;
+                        setView('transaksi'); 
+                    }
+                    else Swal.fire('Gagal', res.message, 'error');
+                }).loginUser(data);
+            }
+        }
+
+
+        function delData(id, sType) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteData(id, sType, state.token); } }); }
+        function delPagu(id) { Swal.fire({ title: 'Hapus Pagu?', icon: 'warning', showCancelButton: true }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(); } else google.script.run.withSuccessHandler(() => loadData()).deleteMasterPagu(id, state.token); } }); }
+
+        
+        function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        
+        function logout() { 
+            localStorage.removeItem('budget_session_2026'); 
+            localStorage.removeItem('budget_token_2026'); 
+            state.user = null; 
+            state.token = null;
+            setView('dashboard'); 
+        }
+
+
+        function fmt(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0); }
+        function fmtShort(n) { if (n >= 1e9) return (n/1e9).toFixed(1) + ' M'; if (n >= 1e6) return (n/1e6).toFixed(1) + ' Jt'; return fmt(n); }
     </script>
 </body>
 </html>
