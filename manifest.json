@@ -1,11 +1,11 @@
 {
-  "name": "Budget Security Monitoring",
-  "short_name": "Budget Security",
-  "description": "Strategic Budget & BUJP Monitoring - Security Division",
+  "name": "Sistem Informasi Manajemen Anggaran (SIMA) - Divisi Keamanan",
+  "short_name": "SIMA Keamanan",
+  "description": "Sistem Informasi Manajemen Anggaran & Operasional - Divisi Keamanan",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#022c22",
-  "theme_color": "#064e3b",
+  "background_color": "#030712",
+  "theme_color": "#030712",
   "orientation": "portrait-primary",
   "icons": [
     {
