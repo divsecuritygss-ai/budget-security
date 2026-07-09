@@ -994,6 +994,22 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalViewEvidence" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="background: rgba(9, 13, 22, 0.98); border: 1px solid var(--primary);">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-success" style="font-size: 14px; letter-spacing: 1px;"><i class="fas fa-file-contract me-2"></i>DOKUMEN BUKTI TRANSAKSI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="document.getElementById('evidenceViewerFrame').src=''"></button>
+                </div>
+                <div class="modal-body p-1" style="height: 75vh;">
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: #000; border-radius: 12px; overflow: hidden;">
+                        <iframe id="evidenceViewerFrame" src="" width="100%" height="100%" style="border: none;" allow="autoplay"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1749,12 +1765,30 @@
                     <td class="text-white-50">${t.No_Invoice || t.Keterangan || ""}</td>
                     <td><span class="badge bg-dark text-white border" style="border-color: var(--border-glass) !important;">${t.Item}</span></td>
                     <td class="text-end fw-bold" style="color: var(--primary)">${fmt(t.Jumlah)}</td>
-                    <td class="text-center">${t.Evidence ? `<a href="${t.Evidence}" target="_blank" class="btn btn-sm btn-outline-success border-0"><i class="fas fa-file-invoice"></i></a>` : '<span class="text-muted">—</span>'}</td>
+                    <td class="text-center">${t.Evidence ? `<button class="btn btn-sm btn-outline-success border-0" onclick="viewEvidence('${t.Evidence}')"><i class="fas fa-file-invoice"></i></button>` : '<span class="text-muted">—</span>'}</td>
                     <td class="text-center">
                         <button class="btn btn-sm text-info me-1 border-0 bg-transparent" title="Revisi Jurnal" onclick="openEditTrx('${t.ID}','${t.sType}')"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm text-danger border-0 bg-transparent" title="Hapus Jurnal" onclick="delData('${t.ID}','${t.sType}')"><i class="fas fa-trash-can"></i></button>
                     </td>
                 </tr>`).join('') : '<tr><td colspan="7" class="text-center py-5 text-muted">Belum ada jurnal transaksi tercatat.</td></tr>';
+        }
+
+        /**
+         * ENGINE: Document Viewer & URL Converter
+         */
+        function viewEvidence(url) {
+            if (!url) return;
+            
+            // Konversi URL standar Google Drive ke URL Preview agar bisa di-embed di Iframe
+            let embedUrl = url;
+            if (embedUrl.includes('drive.google.com') && embedUrl.includes('/view')) {
+                embedUrl = embedUrl.replace(/\/view.*/, '/preview');
+            }
+            
+            // Set source iframe dan tampilkan modal
+            document.getElementById('evidenceViewerFrame').src = embedUrl;
+            const viewerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalViewEvidence'));
+            viewerModal.show();
         }
 
         function renderPagu(el) {
