@@ -1,4 +1,4 @@
-const CACHE_NAME = "budget-security-cache-v3";
+const CACHE_NAME = "sima-keamanan-cache-v4";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
@@ -31,6 +31,12 @@ self.addEventListener("activate", (e) => {
 
 // Intersepsi Jaringan: Sajikan UI Instan Walau Offline
 self.addEventListener("fetch", (e) => {
-  if (e.request.url.includes("script.google.com")) return; // Biarkan API ditangani oleh logika AJAX
+  // 1. Bypass secara eksplisit untuk API Google Apps Script agar Data Real-Time tersaji
+  if (e.request.url.includes("script.google.com")) {
+      e.respondWith(fetch(e.request));
+      return;
+  }
+  
+  // 2. Strategi Cache-First untuk aset UI statis (Mempercepat waktu muat Vercel)
   e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
 });
