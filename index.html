@@ -1386,6 +1386,30 @@
             if (state.db && state.db.masterWK.length > 0) renderDashboardContent();
         }
 
+        function initMap() {
+    const mapEl = document.getElementById('dashMap');
+    if (!mapEl) return;
+    
+    // Protokol Pembersihan: Hancurkan instance peta lama jika ada untuk mencegah error re-initialization Leaflet
+    if (typeof state !== 'undefined' && state.map) {
+        state.map.remove();
+        state.map = null;
+    }
+
+    // Inisialisasi Peta Baru dengan Koordinat Dasar (Default: Geografis Tengah Indonesia)
+    const mapInstance = L.map('dashMap').setView([-2.5489, 118.0149], 5);
+
+    // Memuat Tile Layer OpenStreetMap Gratis sesuai Standar Ekosistem EASE-OS (EOS-PATTERN-038)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mapInstance);
+
+    // Menyimpan kembali instance peta ke dalam Global State Management Aplikasi
+    if (typeof state !== 'undefined') {
+        state.map = mapInstance;
+    }
+}
+
         function loadData(callback, forceLoad = false) {
             if (state.db && state.db.masterWK && state.db.masterWK.length > 0 && !forceLoad) {
                 populateFilters();
