@@ -1175,6 +1175,9 @@
                                     ${isLoggedIn ? 'TERMINAL ENCRYPTED' : 'PUBLIC SYSTEM READ-ONLY'}
                                 </p>
                             </div>
+                            <button id="pwaInstallBtn" class="btn btn-outline-info px-3 fw-bold me-2" style="border-radius: 12px; font-size: 12px; display: none;" onclick="triggerPwaInstall()">
+                                <i class="fas fa-download me-1"></i>INSTALL APP
+                            </button>
                             ${!isLoggedIn ? `
                                 <button class="btn btn-success px-4 fw-bold shadow-lg" onclick="setView('login-page')" style="background: var(--primary); border: none; border-radius: 12px; font-size: 12px; box-shadow: 0 0 15px var(--primary-glow)">
                                     <i class="fas fa-key me-2"></i>LOGIN SISTEM ANGGARAN
@@ -1848,6 +1851,47 @@
         
         function fmt(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0); }
         function fmtShort(n) { if (n >= 1e9) return (n/1e9).toFixed(1) + ' M'; if (n >= 1e6) return (n/1e6).toFixed(1) + ' Jt'; return fmt(n); }
+
+        // --- REGISTRASI ENGINE PWA & AUTO UPDATE POLICY ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                    reg.onupdatefound = () => {
+                        const installingWorker = reg.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                Swal.fire({
+                                    title: 'Sistem Terupdate',
+                                    text: 'Versi dashboard baru terdeteksi. Muat ulang otomatis?',
+                                    icon: 'info',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#10b981',
+                                    confirmButtonText: 'RELOAD SEKARANG'
+                                }).then((res) => { if (res.isConfirmed) window.location.reload(); });
+                            }
+                        };
+                    };
+                });
+            });
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredPrompt = e;
+            const btn = document.getElementById('pwaInstallBtn');
+            if (btn) btn.style.display = 'inline-block';
+        });
+
+        function triggerPwaInstall() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choice) => {
+                if (choice.outcome === 'accepted') console.log('User installed PWA');
+                deferredPrompt = null;
+                const btn = document.getElementById('pwaInstallBtn');
+                if (btn) btn.style.display = 'none';
+            });
+        }
     </script>
 </body>
 </html>
