@@ -990,14 +990,28 @@
                         withSuccessHandler: function(cb) { this.success = cb; return this; },
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
                         getAppData: function(role, wkAccess) {
-                            fetch(`${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`)
-                                .then(res => res.json()).then(d => {
-                                    if (d && !d.error) localStorage.setItem("cache_security_db", JSON.stringify(d));
+                            const url = `${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`;
+                            
+                            // Gunakan {redirect: 'follow'} untuk memastikan fetch mengikuti redirect dari Google
+                            fetch(url, { redirect: 'follow' })
+                                .then(res => {
+                                    if (!res.ok) throw new Error("HTTP error! status: " + res.status);
+                                    return res.json();
+                                })
+                                .then(d => {
+                                    if (d && !d.error) {
+                                        localStorage.setItem("cache_security_db", JSON.stringify(d));
+                                    }
                                     if (this.success) this.success(d);
-                                }).catch(err => {
+                                })
+                                .catch(err => {
+                                    console.error("Sync Error:", err);
                                     const backup = localStorage.getItem("cache_security_db");
-                                    if (backup && this.success) this.success(JSON.parse(backup));
-                                    else if (this.failure) this.failure(err);
+                                    if (backup) {
+                                        if (this.success) this.success(JSON.parse(backup));
+                                    } else if (this.failure) {
+                                        this.failure(err);
+                                    }
                                 });
                         },
                         loginUser: function(form) {
