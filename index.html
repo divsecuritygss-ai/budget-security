@@ -1017,7 +1017,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const GAS_SECURITY_API_URL = "https://script.google.com/macros/s/AKfycbxEsYhShSBGKm9PxUo7xobZpfvip82otfy0WxL7s6u-c8WbAT4FM3_KFSapsksmak84/exec";
+        // CONFIGURATION LAYER HARDENING (EOS-GAS-016): Pastikan URL ini hanya digunakan untuk environment local testing saja.
+        // Di lingkungan Production Workspace, Web App secara otomatis menggunakan native channel google.script.run.
+        const GAS_SECURITY_API_URL = ""; 
 
         if (typeof google === 'undefined' || !google.script) {
             window.google = {
@@ -1219,7 +1221,8 @@
             renderView();
         }
 
-        function setView(v) { state.view = v; renderApp(); loadData(); }
+        // RUNTIME STATE SYNCHRONIZATION HARDENING (EOS-APPLICATION-075)
+        function setView(v, forceLoad = false) { state.view = v; renderApp(); loadData(null, forceLoad); }
 
         function renderView() {
             const container = document.getElementById('pageContainer');
@@ -1948,9 +1951,17 @@
         function handleLogin(e) {
             e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); startLoading();
             if (typeof google === 'undefined') {
-                setTimeout(() => { endLoading(); if(data.username === 'admin') { state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; safeStorage.setItem('budget_session_2026', JSON.stringify(state.user)); setView('dashboard'); } }, 1000);
+                setTimeout(() => { endLoading(); if(data.username === 'admin') { state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; safeStorage.setItem('budget_session_2026', JSON.stringify(state.user)); setView('dashboard', true); } }, 1000);
             } else {
-                google.script.run.withSuccessHandler(res => { endLoading(); if (res && res.success) { safeStorage.setItem('budget_session_2026', JSON.stringify(res.user)); state.user = res.user; setView('dashboard'); } else Swal.fire('Gagal', res.message, 'error'); }).loginUser(data);
+                google.script.run.withSuccessHandler(res => { 
+                    endLoading(); 
+                    if (res && res.success) { 
+                        safeStorage.setItem('budget_session_2026', JSON.stringify(res.user)); 
+                        state.user = res.user; 
+                        // FORCE LOAD TRUE: Hancurkan cache data tamu, paksa server menarik alokasi pagu riil user
+                        setView('dashboard', true); 
+                    } else Swal.fire('Gagal', res.message, 'error'); 
+                }).loginUser(data);
             }
         }
 
@@ -1959,7 +1970,17 @@
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active-state'); }
-        function logout() { safeStorage.removeItem('budget_session_2026'); state.user = null; setView('landing-page'); }
+        
+        function logout() { 
+            safeStorage.removeItem('budget_session_2026'); 
+            state.user = null; 
+            // MEMORY ISOLATION PURGE (EOS-GAS-016): Hancurkan seluruh authorized data residu dari RAM browser
+            state.db = { 
+                masterWK: [], masterPilihan: [], masterBUJP: [], pagu: [], 
+                realisasiInternal: [], realisasiInvoice: [], realisasiStakeholder: [], masterJenisTrx: []
+            };
+            setView('landing-page', true); 
+        }
         function fmt(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0); }
         function fmtShort(n) { if (n >= 1e9) return (n/1e9).toFixed(1) + ' M'; if (n >= 1e6) return (n/1e6).toFixed(1) + ' Jt'; return fmt(n); }
     </script>
