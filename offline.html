@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline | SIMA Keamanan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #030712; color: #f8fafc; font-family: sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; text-align: center; }
+        .offline-card { border: 1px solid rgba(255,255,255,0.08); background: rgba(15,23,42,0.6); padding: 3rem; border-radius: 20px; max-width: 450px; }
+    </style>
+</head>
+<body>
+    <div class="offline-card shadow-lg">
+        <h1 class="text-danger mb-3">⚠️ KONEKSI TERPUTUS</h1>
+        <p class="text-muted">Terminal SIMA Keamanan kehilangan jembatan jaringan. Anda masih bisa melihat data historis terakhir yang tersimpan di dalam cache lokal.</p>
+        <button class="btn btn-success w-100 py-2 mt-3" onclick="window.location.reload()">PERBARUI KONEKSI</button>
+    </div>
+</body>
+</html>
