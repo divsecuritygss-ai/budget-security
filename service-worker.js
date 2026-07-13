@@ -3,7 +3,7 @@ const OFFLINE_URL = '/offline.html';
 
 const ASSETS_TO_CACHE = [
   '/',
-  '/Index.html',
+  '/index.html',
   OFFLINE_URL,
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
@@ -25,7 +25,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => Promise.all(
       keys.map((key) => {
-        if (key !== CACHE_NAME) return caches.delete(key);
+        if (key !== CAVE_NAME) return caches.delete(key);
       })
     ))
   );
@@ -48,7 +48,7 @@ self.addEventListener('fetch', (event) => {
     // Strategi Aset Statis: Cache First, Fallback ke Network
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        return response || fetch(event.request).catch(() => caches.match(OFFLINE_URL));
+        return cachedResponse || fetch(event.request).catch(() => caches.match(OFFLINE_URL));
       })
     );
   }
