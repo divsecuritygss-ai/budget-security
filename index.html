@@ -983,6 +983,18 @@
 
         // HYBRID SYSTEM ENVIRONMENT MOCKUP POLYFILL (EOS-APPLICATION-079)
         if (typeof google === 'undefined' || !google.script) {
+            // Helper Universal Fetch: Menggunakan text/plain agar GAS tidak memblokir preflight CORS
+            const fetchGAS = (action, payload) => {
+                return fetch(GAS_SECURITY_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, data: payload })
+                }).then(res => {
+                    if (!res.ok) throw new Error("Kegagalan Jaringan: " + res.status);
+                    return res.json(); // Membaca respon asli dari Google Apps Script
+                });
+            };
+
             window.google = {
                 script: {
                     run: {
@@ -991,8 +1003,6 @@
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
                         getAppData: function(role, wkAccess) {
                             const url = `${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`;
-                            
-                            // Gunakan {redirect: 'follow'} untuk memastikan fetch mengikuti redirect dari Google
                             fetch(url, { redirect: 'follow' })
                                 .then(res => {
                                     if (!res.ok) throw new Error("HTTP error! status: " + res.status);
@@ -1015,33 +1025,39 @@
                                 });
                         },
                         loginUser: function(form) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'loginUser', data: { form: form } }) })
-                                .then(() => { if(this.success) this.success({ success: true, user: { username: form.username, nama: 'User Session', role: 'USER', wkAccess: 'ALL' } }); })
+                            fetchGAS('loginUser', { form: form })
+                                .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         saveMasterPagu: function(payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, userData: userData } }) })
-                                .then(() => { if(this.success) this.success({success: true}); });
+                            fetchGAS('saveMasterPagu', { payload: payload, userData: userData })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         deleteMasterPagu: function(id, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, userData: userData } }) })
-                                .then(() => { if(this.success) this.success({success: true}); });
+                            fetchGAS('deleteMasterPagu', { id: id, userData: userData })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         saveTransaction: function(type, payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, userData: userData } }) })
-                                .then(() => { if(this.success) this.success({success: true}); });
+                            fetchGAS('saveTransaction', { type: type, payload: payload, userData: userData })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         updateTransaction: function(id, sType, payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, userData: userData } }) })
-                                .then(() => { if(this.success) this.success({success: true}); });
+                            fetchGAS('updateTransaction', { id: id, sType: sType, payload: payload, userData: userData })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         deleteData: function(id, sType, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
-                                .then(() => { if(this.success) this.success({success: true}); });
+                            fetchGAS('deleteData', { id: id, sType: sType, userData: userData })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         updateUserProfile: function(form) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form } }) })
-                                .then(() => { if(this.success) this.success({success: true, newName: form.nama}); });
+                            fetchGAS('updateUserProfile', { form: form })
+                                .then(d => { if(this.success) this.success(d); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         }
                     }
                 }
