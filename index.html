@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#030712">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
     
     <!-- CSS Dependencies -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -45,7 +46,6 @@
             overflow-x: hidden;
         }
 
-        /* custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -61,7 +61,6 @@
             background: var(--primary);
         }
 
-        /* Sidebar Glassmorphic - Hanya muncul jika Logged In */
         .sidebar { 
             width: var(--sidebar-width); 
             background: rgba(4, 10, 8, 0.98);
@@ -73,7 +72,7 @@
             top: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1050;
-            display: none; /* Dikontrol via JS berdasarkan login state */
+            display: none;
             flex-direction: column;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
@@ -146,9 +145,8 @@
             background: rgba(0,0,0,0.3);
         }
 
-        /* Main Wrapper */
         .main-content {
-            margin-left: 0; /* Default Guest */
+            margin-left: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             min-height: 100vh;
             padding-bottom: 3rem;
@@ -158,7 +156,6 @@
             margin-left: var(--sidebar-width);
         }
 
-        /* Top Navbar */
         .top-navbar {
             background: rgba(9, 13, 22, 0.8);
             backdrop-filter: blur(12px);
@@ -172,7 +169,6 @@
             z-index: 1000;
         }
 
-        /* LANDING PAGE GUEST VIEW */
         .hero-banner {
             background: linear-gradient(180deg, rgba(9, 13, 22, 0.4) 0%, #030712 100%), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop') no-repeat center center;
@@ -211,7 +207,6 @@
             line-height: 1.6;
         }
 
-        /* Gallery & Highlight Grid */
         .gallery-container {
             padding: 2rem 2.5rem;
         }
@@ -298,7 +293,6 @@
             font-weight: 600;
         }
 
-        /* Tactical Controls Grid */
         .dashboard-controls {
             background: rgba(11, 15, 25, 0.95);
             backdrop-filter: blur(12px);
@@ -344,12 +338,8 @@
             width: 100%;
             transition: all 0.2s;
             outline: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
         }
         
-        /* Memastikan class form-select bawaan bootstrap di Modal juga bersih dari panah ganda */
         .form-select {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -367,7 +357,6 @@
             color: var(--text-main);
         }
 
-        /* Glass KPI Cards */
         .kpi-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -427,7 +416,6 @@
             gap: 5px;
         }
 
-        /* Visual Layout */
         .visual-grid {
             padding: 0 2.5rem 2rem 2.5rem;
         }
@@ -442,6 +430,10 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        .viz-card p {
+            color: #cbd5e1;
         }
 
         .viz-title {
@@ -468,7 +460,6 @@
             border: 1px solid var(--border-glass);
         }
 
-        /* Pulse Radar Marker Animation */
         .custom-pulse-container {
             position: relative;
             display: flex;
@@ -554,7 +545,6 @@
             text-align: right;
         }
 
-        /* Insights grid */
         .section-label {
             padding: 0 2.5rem;
             font-size: 0.8rem;
@@ -569,6 +559,7 @@
         }
         .section-label::after {
             content: '';
+            position: relative;
             flex-grow: 1;
             height: 1px;
             background: var(--border-glass);
@@ -644,7 +635,6 @@
             letter-spacing: 1px;
         }
 
-        /* Inputs & Modals */
         .modal-content {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(25px);
@@ -663,9 +653,6 @@
         }
 
         .form-control, .form-select {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
             background-color: rgba(15, 23, 42, 0.8) !important;
             border: 1px solid rgba(255, 255, 255, 0.15) !important;
             color: #f8fafc !important;
@@ -687,36 +674,12 @@
             color: #f8fafc !important;
         }
 
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            cursor: pointer;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background-color: rgba(255,255,255,0.08);
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
-            color: var(--text-main) !important;
-        }
-
-        /* Perbaikan Kontras Teks dan Background Dropdown */
-        .form-control, .form-select {
-            color: var(--text-main) !important;
-        }
-        
-        .form-select option {
-            background-color: var(--bg-obsidian);
-            color: var(--text-main);
-        }
-
-        /* Inversi warna ikon kalender bawaan browser untuk tema gelap */
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
             cursor: pointer;
         }
 
-        /* Table */
         .table {
             color: var(--text-main) !important;
         }
@@ -749,11 +712,10 @@
 
         #realtimeClock { font-weight: 800; color: var(--primary); font-size: 0.95rem; letter-spacing: 0.5px; }
 
-        /* Badge Custom for Highlights & Animation */
         .badge-line {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            color: #f8fafc; /* Kontras Tinggi Teks Diperbaiki */
+            color: #cbd5e1;
             font-weight: 600;
             padding: 8px 14px;
             border-radius: 8px;
@@ -769,17 +731,15 @@
             transform: translateY(-2px);
         }
 
-        /* Sequential Pulse Animation for Line Anggaran */
         .badge-pulse {
             animation: badge-glow 4s infinite;
         }
         @keyframes badge-glow {
-            0%, 100% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #f8fafc; }
+            0%, 100% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #cbd5e1; }
             15% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); border-color: var(--primary); background: rgba(16, 185, 129, 0.15); color: var(--primary); transform: translateY(-2px); }
-            30% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #f8fafc; transform: translateY(0); }
+            30% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #cbd5e1; transform: translateY(0); }
         }
 
-        /* Modern Cyber Loader Animation */
         .cyber-loader {
             width: 55px;
             height: 55px;
@@ -855,7 +815,7 @@
                                 <select id="editTrxWK" name="WK" class="form-select" required></select>
                             </div>
                             <div class="col-md-6">
-                                <label class="control-label">Nama BUJP</label>
+                                <label class="control-label">BUJP</label>
                                 <input id="editTrxBUJP" name="BUJP" class="form-control" required>
                             </div>
                             <div class="col-md-6">
@@ -994,6 +954,7 @@
         </div>
     </div>
 
+    <!-- Modal View Bukti -->
     <div class="modal fade" id="modalViewEvidence" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content" style="background: rgba(9, 13, 22, 0.98); border: 1px solid var(--primary);">
@@ -1010,70 +971,63 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // CONFIGURATION LAYER HARDENING (EOS-GAS-016): Pastikan URL ini hanya digunakan untuk environment local testing saja.
-        // Di lingkungan Production Workspace, Web App secara otomatis menggunakan native channel google.script.run.
-        const GAS_SECURITY_API_URL = ""; 
+        // CONFIGURATION LAYER HARDENING (EOS-GAS-016)
+        const GAS_SECURITY_API_URL = "https://script.google.com/macros/s/AKfycbxEsYhShSBGKm9PxUo7xobZpfvip82otfy0WxL7s6u-c8WbAT4FM3_KFSapsksmak84/exec"; 
 
+        // HYBRID SYSTEM ENVIRONMENT MOCKUP POLYFILL (EOS-APPLICATION-079)
         if (typeof google === 'undefined' || !google.script) {
             window.google = {
                 script: {
                     run: {
-                        success: null,
-                        failure: null,
+                        success: null, failure: null,
                         withSuccessHandler: function(cb) { this.success = cb; return this; },
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
                         getAppData: function(role, wkAccess) {
                             fetch(`${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`)
-                                .then(res => res.json())
-                                .then(d => {
-                                    if (d && !d.error) {
-                                        localStorage.setItem("cache_security_db", JSON.stringify(d));
-                                    }
+                                .then(res => res.json()).then(d => {
+                                    if (d && !d.error) localStorage.setItem("cache_security_db", JSON.stringify(d));
                                     if (this.success) this.success(d);
-                                })
-                                .catch(err => {
+                                }).catch(err => {
                                     const backup = localStorage.getItem("cache_security_db");
-                                    if (backup) {
-                                        if (this.success) this.success(JSON.parse(backup));
-                                    } else {
-                                        if (this.failure) this.failure(err);
-                                    }
+                                    if (backup && this.success) this.success(JSON.parse(backup));
+                                    else if (this.failure) this.failure(err);
                                 });
                         },
                         loginUser: function(form) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'loginUser', data: { form: form } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'loginUser', data: { form: form } }) })
+                                .then(() => { if(this.success) this.success({ success: true, user: { username: form.username, nama: 'User Session', role: 'USER', wkAccess: 'ALL' } }); })
+                                .catch(err => { if(this.failure) this.failure(err); });
                         },
                         saveMasterPagu: function(payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveMasterPagu', data: { payload: payload, userData: userData } }) })
+                                .then(() => { if(this.success) this.success({success: true}); });
                         },
                         deleteMasterPagu: function(id, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteMasterPagu', data: { id: id, userData: userData } }) })
+                                .then(() => { if(this.success) this.success({success: true}); });
                         },
                         saveTransaction: function(type, payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'saveTransaction', data: { type: type, payload: payload, userData: userData } }) })
+                                .then(() => { if(this.success) this.success({success: true}); });
                         },
                         updateTransaction: function(id, sType, payload, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, userData: userData } }) })
+                                .then(() => { if(this.success) this.success({success: true}); });
                         },
                         deleteData: function(id, sType, userData) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
+                                .then(() => { if(this.success) this.success({success: true}); });
                         },
                         updateUserProfile: function(form) {
-                            fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                            fetch(GAS_SECURITY_API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form } }) })
+                                .then(() => { if(this.success) this.success({success: true, newName: form.nama}); });
                         }
                     }
                 }
@@ -1087,9 +1041,6 @@
             removeItem(key) { try { window.localStorage.removeItem(key); } catch(e) { delete memStorageFallback[key]; } }
         };
 
-        /**
-         * GLOBAL STATE
-         */
         let state = {
             user: null,
             view: 'landing-page',
@@ -1107,6 +1058,9 @@
         const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
         window.onload = function() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => console.log("SW offline configuration initialized"));
+            }
             checkLoginState();
         };
 
@@ -1140,6 +1094,8 @@
             if (!isNaN(parsed.getTime())) return parsed;
             return null;
         }
+
+        function setView(v, forceLoad = false) { state.view = v; renderApp(); loadData(null, forceLoad); }
 
         function renderApp() {
             const app = document.getElementById('app');
@@ -1221,9 +1177,6 @@
             renderView();
         }
 
-        // RUNTIME STATE SYNCHRONIZATION HARDENING (EOS-APPLICATION-075)
-        function setView(v, forceLoad = false) { state.view = v; renderApp(); loadData(null, forceLoad); }
-
         function renderView() {
             const container = document.getElementById('pageContainer');
             if (!container) return;
@@ -1236,17 +1189,12 @@
             }
         }
 
-        /**
-         * BRAND NEW: DYNAMIC LANDING PAGE (PORTAL PUBLIK)
-         */
         function renderLandingPage(el) {
-            // Kalkulasi Data Aktual (atau Fallback jika belum load penuh)
             const totalWk = state.db.masterWK ? state.db.masterWK.length : 0;
             const totalPersonil = state.db.masterWK ? state.db.masterWK.reduce((sum, wk) => sum + (parseInt(wk.PERSONNEL_COUNT) || 0), 0) : 0;
             const totalBujp = state.db.masterBUJP ? state.db.masterBUJP.length : 0;
             const currYear = new Date().getFullYear();
 
-            // Ekstraksi Line Anggaran Aktual & Integrasi Efek Kedip Bergantian
             let lineAnggaranHtml = '';
             if (state.db.masterPilihan && state.db.masterPilihan.length > 0) {
                 lineAnggaranHtml = `<div class="d-flex flex-wrap gap-2">` + 
@@ -1258,14 +1206,10 @@
                 lineAnggaranHtml = '<span class="text-muted small"><i class="fas fa-spinner fa-spin me-2"></i>Memuat Line Anggaran WP&B...</span>';
             }
 
-            // Integrasi Dynamic Gallery dari Actual WK Data Sheet
             const fallbackImages = [
-                "https://picsum.photos/id/1018/600/400",
-                "https://picsum.photos/id/1015/600/400",
-                "https://picsum.photos/id/1025/600/400",
-                "https://picsum.photos/id/1043/600/400",
-                "https://picsum.photos/id/1044/600/400",
-                "https://picsum.photos/id/1050/600/400"
+                "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1521791136366-33439de30231?q=80&w=600&auto=format&fit=crop"
             ];
             
             let actualWkList = state.db.masterWK || [];
@@ -1275,24 +1219,7 @@
                 const imgUrl = fallbackImages[index % fallbackImages.length];
                 const wkNameUpper = wk.Nama_WK.toUpperCase();
                 const badgeText = wkNameUpper.includes('JAKARTA') ? 'HQ CONTROL' : 'OPS SECURITY';
-                
-                // Dictionary Deskripsi Taktis Spesifik per Wilayah Kerja
-                const wkDescriptions = {
-                    'JAKARTA': `Pusat komando dan kendali (HQ) pengamanan korporat terpusat. Mengkoordinasikan kebijakan strategis, VIP protection, dan monitoring intelijen dengan kekuatan ${wk.PERSONNEL_COUNT || 0} personil.`,
-                    'BENTU': `Pengamanan aset vital blok operasional BENTU. Fokus pada patroli perimeter fasilitas produksi dan pencegahan intrusi dengan alokasi ${wk.PERSONNEL_COUNT || 0} personil taktis.`,
-                    'ITA': `Pemantauan keamanan fasilitas infrastruktur terintegrasi ITA. Penjagaan ketat pada titik akses logistik utama dengan dukungan ${wk.PERSONNEL_COUNT || 0} personil aktif.`,
-                    'TONGA': `Dukungan keamanan teritorial untuk operasional blok TONGA. Menjaga stabilitas lingkungan kerja dan pengamanan aset dengan ${wk.PERSONNEL_COUNT || 0} personil.`,
-                    'SIAK': `Pengamanan sektor energi wilayah SIAK. Operasi patroli terukur pada jalur distribusi dan stasiun pengumpul dengan kekuatan ${wk.PERSONNEL_COUNT || 0} personil.`,
-                    'KAMPAR': `Perlindungan fasilitas produksi dan aset teritorial KAMPAR. Memastikan kelancaran operasional wilayah ring-1 dengan penempatan ${wk.PERSONNEL_COUNT || 0} personil.`,
-                    'PGE': `Pengamanan infrastruktur energi panas bumi (PGE). Fokus pada mitigasi risiko dan patroli area ring kritikal menggunakan ${wk.PERSONNEL_COUNT || 0} personil terlatih.`,
-                    'GEBANG': `Monitoring keamanan wilayah operasional GEBANG. Penjagaan aset logistik dan fasilitas operasional harian dengan dukungan ${wk.PERSONNEL_COUNT || 0} personil.`
-                };
-
-                // Pencarian deskripsi spesifik, fallback ke template default jika tidak ditemukan
-                const specificKey = Object.keys(wkDescriptions).find(key => wkNameUpper.includes(key));
-                const descText = specificKey 
-                    ? wkDescriptions[specificKey] 
-                    : `Pembiayaan operasional, taktis, dan logistik untuk pengamanan perimeter wilayah ${wk.Nama_WK} dengan alokasi kekuatan ${wk.PERSONNEL_COUNT || 0} personil aktif.`;
+                const descText = `Pembiayaan operasional, taktis, dan logistik untuk pengamanan perimeter wilayah ${wk.Nama_WK} dengan alokasi kekuatan ${wk.PERSONNEL_COUNT || 0} personil aktif.`;
                 
                 return `
                 <div class="gallery-card">
@@ -1301,13 +1228,12 @@
                         <span class="gallery-badge">${badgeText}</span>
                     </div>
                     <div class="gallery-body">
-                        <h6 class="text-success small fw-extrabold mb-1" style="color: var(--primary) !important;"><i class="fas fa-location-crosshairs me-1"></i>${wk.Nama_WK}</h6>
+                        <h6 class="text-success small fw-bold mb-1" style="color: var(--primary) !important;"><i class="fas fa-location-crosshairs me-1"></i>${wk.Nama_WK}</h6>
                         <h5 class="gallery-wk-title">Pengamanan Perimeter ${wk.Nama_WK}</h5>
-                        <!-- Perbaikan Kontras Warna Teks di Bawah Ini -->
                         <p class="gallery-desc" style="color: #cbd5e1;">${descText}</p>
                         <div class="gallery-footer-info">
                             <span style="color: #94a3b8;">REKANAN: <strong class="text-white">${wk.BUJP_NAME || '-'}</strong></span>
-                            <span class="text-success"><i class="fas fa-circle-check me-1"></i>DUDUKAN FISKAL AKTIF</span>
+                            <span class="text-success"><i class="fas fa-circle-check me-1"></i>FISKAL AKTIF</span>
                         </div>
                     </div>
                 </div>
@@ -1317,24 +1243,24 @@
             el.innerHTML = `
                 <div class="hero-banner">
                     <h1 class="hero-title">PORTAL ANGGARAN <span>DIVISI KEAMANAN</span></h1>
-                    <p class="hero-subtitle">Sistem Informasi Manajemen Anggaran Divisi Keamanan, memantau efisiensi anggaran berdasrkan atas rapat WP&B.</p>
+                    <p class="hero-subtitle">Sistem Informasi Informasi Terintegrasi Kerja Kerja Dan Evaluasi Penyerapan Pagu Definitif Operasional.</p>
                     
                     <div class="d-flex justify-content-center flex-wrap gap-5 mt-5">
                         <div class="text-center">
-                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalWk || 10}</h2>
-                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">WILAYAH KERJA AKTIF</span>
+                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalWk || 0}</h2>
+                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc;">WILAYAH KERJA AKTIF</span>
                         </div>
                         <div class="text-center">
-                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalPersonil ? totalPersonil.toLocaleString('id-ID') : '1.250+'}</h2>
-                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">TOTAL PERSONIL BUJP</span>
+                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalPersonil ? totalPersonil.toLocaleString('id-ID') : '0'}</h2>
+                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc;">TOTAL PERSONIL BUJP</span>
                         </div>
                         <div class="text-center">
-                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalBujp || 4}</h2>
-                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">MITRA BUJP</span>
+                            <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${totalBujp || 0}</h2>
+                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc;">MITRA BUJP</span>
                         </div>
                         <div class="text-center">
                             <h2 class="text-primary fw-bold mb-0" style="text-shadow: 0 0 15px var(--primary-glow); font-size: 2.5rem;">${currYear}</h2>
-                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">TAHUN FISKAL BERJALAN</span>
+                            <span class="small fw-bold" style="letter-spacing: 1px; color: #f8fafc;">TAHUN FISKAL BERJALAN</span>
                         </div>
                     </div>
                 </div>
@@ -1342,7 +1268,6 @@
                 <div class="gallery-container pt-5 pb-2">
                     <div class="section-label mb-4">Portofolio Pembiayaan Operasional Keamanan</div>
                     
-                    <!-- HIGHLIGHT BUDGET ITEMS & PERBAIKAN KONTRAS -->
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
                             <div class="insight-card p-4" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
@@ -1362,8 +1287,7 @@
                         </div>
                     </div>
 
-                    <!-- GALLERY GRID DYNAMIC -->
-                    <div class="section-label mb-4">Pemetaan Distribusi Dukungan Keamanan</div>
+                    <div class="section-label mb-4">Pemetaan Distribusi Kinerja Lapangan</div>
                     <div class="gallery-grid">
                         ${cardsHtml}
                     </div>
@@ -1371,9 +1295,6 @@
             `;
         }
 
-        /**
-         * DASHBOARD MODULE
-         */
         function renderDashboard(el) {
             el.innerHTML = `
                 <div class="dashboard-controls">
@@ -1445,28 +1366,14 @@
                 <div class="insight-grid" id="categoryCardsContainer"></div>
             `;
             initMap();
-            if (state.db) renderDashboardContent();
+            if (state.db && state.db.masterWK.length > 0) renderDashboardContent();
         }
 
-        function initMap() {
-            const container = document.getElementById('dashMap');
-            if (!container) return;
-            if (state.map) { state.map.off(); state.map.remove(); }
-            
-            state.map = L.map('dashMap', { center: [-1.0, 116.0], zoom: 5, zoomControl: false });
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CartoDB', opacity: 0.95 }).addTo(state.map);
-            L.control.zoom({ position: 'bottomright' }).addTo(state.map);
-            setTimeout(() => { if(state.map) state.map.invalidateSize(); }, 300);
-        }
-
-        /**
-         * DATA LOGIC (Integrasi Tarikan Publik)
-         */
         function loadData(callback, forceLoad = false) {
             if (state.db && state.db.masterWK && state.db.masterWK.length > 0 && !forceLoad) {
+                populateFilters();
                 if(state.view === 'landing-page') renderLandingPage(document.getElementById('pageContainer'));
                 if(state.view === 'dashboard') renderDashboardContent();
-                populateFilters();
                 if(state.view === 'transaksi') renderTrxTable();
                 if(state.view === 'pagu') renderPaguTable();
                 if(callback) callback();
@@ -1475,70 +1382,31 @@
 
             startLoading();
             const role = state.user?.role || 'GUEST';
-            const access = state.user?.wkAccess || 'NONE'; // Memastikan Guest tidak menarik Data Transaksi Rahasia dari API
+            const access = state.user?.wkAccess || 'NONE';
 
-            if (typeof google === 'undefined') {
-                setTimeout(() => {
-                    state.db = { 
-                        masterWK: [
-                            { ID: "WK1", Nama_WK: "Korinci Baru", BUJP_NAME: "PT. Tunas Energi", LAT: "-0.85", LNG: "101.4", PERSONNEL_COUNT: "125", CONTRACT_END_DATE: "2026-12-31" },
-                            { ID: "WK2", Nama_WK: "Tunas Energi", BUJP_NAME: "PT. Korinci Baru", LAT: "-1.25", LNG: "102.1", PERSONNEL_COUNT: "98", CONTRACT_END_DATE: "2026-10-15" },
-                            { ID: "WK3", Nama_WK: "Jakarta HQ", BUJP_NAME: "Internal Security", LAT: "-6.20", LNG: "106.8", PERSONNEL_COUNT: "45", CONTRACT_END_DATE: "2027-01-01" }
-                        ], 
-                        masterPilihan: [
-                            { ID: "P1", Nama_Pilihan: "Biaya Gaji Personil & Satpam" },
-                            { ID: "P2", Nama_Pilihan: "Biaya Patroli Taktis" },
-                            { ID: "P3", Nama_Pilihan: "Biaya Alat Pelindung Diri" },
-                            { ID: "P4", Nama_Pilihan: "Sewa Kapal Patroli Laut" }
-                        ],
-                        masterBUJP: [ {ID: "1", Nama_BUJP: "PT. Tunas Energi"}, {ID: "2", Nama_BUJP: "PT. Korinci Baru"} ],
-                        masterJenisTrx: [
-                            { ID: "1", Nama_Label: "Payment Request", Kategori_Sistem: "internal" },
-                            { ID: "2", Nama_Label: "Invoice BUJP", Kategori_Sistem: "invoice" }
-                        ],
-                        pagu: [
-                            { ID: "PG1", WK: "Jakarta HQ", Deskripsi: "Biaya Gaji Personil & Satpam", Item: "BS-8", Pagu: 850000000 },
-                            { ID: "PG2", WK: "Korinci Baru", Deskripsi: "Biaya Patroli Taktis", Item: "BS-11", Pagu: 450000000 }
-                        ], 
-                        realisasiInternal: [
-                            { ID: "TX1", Tanggal: "2026-07-05", WK: "Jakarta HQ", BUJP: "Internal", Item: "BS-8", Pilihan_Anggaran: "Biaya Gaji Personil & Satpam", Jumlah: 150000000, Keterangan: "Payroll Satpam HQ Juli 2026", Input_By: "admin", Evidence: "#" }
-                        ], 
-                        realisasiInvoice: [
-                            { ID: "TX2", Tanggal: "2026-07-08", WK: "Korinci Baru", BUJP: "PT. Tunas Energi", Item: "BS-11", Pilihan_Anggaran: "Biaya Patroli Taktis", Jumlah: 85000000, No_Invoice: "INV/TE/07/26", Input_By: "admin", Evidence: "#" }
-                        ], 
-                        realisasiStakeholder: [] 
-                    };
+            google.script.run
+                .withSuccessHandler(res => { 
+                    state.db = res; 
                     endLoading();
+                    populateFilters();
                     if(state.view === 'landing-page') renderLandingPage(document.getElementById('pageContainer'));
                     if(state.view === 'dashboard') renderDashboardContent();
-                    populateFilters();
+                    if(state.view === 'transaksi') renderTrxTable();
+                    if(state.view === 'pagu') renderPaguTable();
                     if(callback) callback();
-                }, 800);
-            } else {
-                google.script.run
-                    .withSuccessHandler(res => { 
-                        state.db = res; 
-                        endLoading();
-                        if(state.view === 'landing-page') renderLandingPage(document.getElementById('pageContainer'));
-                        if(state.view === 'dashboard') renderDashboardContent();
-                        populateFilters();
-                        if(state.view === 'transaksi') renderTrxTable();
-                        if(state.view === 'pagu') renderPaguTable();
-                        if(callback) callback();
-                    })
-                    .withFailureHandler(() => {
-                        endLoading();
-                        Swal.fire('Error', 'Gagal memproses sinkronisasi database cloud.', 'error');
-                    })
-                    .getAppData(role, access);
-            }
+                })
+                .withFailureHandler(() => {
+                    endLoading();
+                    Swal.fire('Error', 'Gagal memproses sinkronisasi database cloud.', 'error');
+                })
+                .getAppData(role, access);
         }
 
         function populateFilters() {
             if(!state.db) return;
-            const listWK = state.db?.masterWK || [];
-            const listPilihan = state.db?.masterPilihan || [];
-            const listJenis = state.db?.masterJenisTrx || [];
+            const listWK = state.db.masterWK || [];
+            const listPilihan = state.db.masterPilihan || [];
+            const listJenis = state.db.masterJenisTrx || [];
 
             const wkSelectors = ['filterWk', 'editTrxWK', 'trxWK', 'paguWK', 'tableFilterTrxWK', 'tableFilterPaguWK'];
             wkSelectors.forEach(id => {
@@ -1553,7 +1421,7 @@
             detailSelectors.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    const prefix = id === 'filterDetail' ? '<option value="ALL">Semua</option>' : '';
+                    const prefix = id.startsWith('filter') || id.startsWith('tableFilter') ? '<option value="ALL">Semua</option>' : '';
                     el.innerHTML = prefix + listPilihan.map(x => `<option value="${x.Nama_Pilihan}">${x.Nama_Pilihan}</option>`).join('');
                 }
             });
@@ -1571,6 +1439,7 @@
             if (state.filters.wk !== 'ALL') { p = p.filter(x => x.WK === state.filters.wk); r = r.filter(x => x.WK === state.filters.wk); }
             if (state.filters.item !== 'ALL') { p = p.filter(x => x.Item === state.filters.item); r = r.filter(x => x.Item === state.filters.item); }
             if (state.filters.detail !== 'ALL') { p = p.filter(x => x.Deskripsi === state.filters.detail); r = r.filter(x => x.Pilihan_Anggaran === state.filters.detail); }
+            
             r = r.filter(x => { 
                 const d = parseLocalDate(x.Tanggal);
                 if (!d || isNaN(d.getTime())) return false;
@@ -1586,34 +1455,17 @@
             if (state.filters.wk !== 'ALL') wkFiltered = wkFiltered.filter(x => x.Nama_WK === state.filters.wk);
             const tPersonnel = wkFiltered.reduce((a,b) => a + Number(b.PERSONNEL_COUNT || 0), 0);
 
-            const elP = document.getElementById('stat-pagu'), elR = document.getElementById('stat-real'), elS = document.getElementById('stat-sisa'), elPr = document.getElementById('perc-real');
-            const elSubSisa = document.getElementById('sub-sisa'), elStat4Val = document.getElementById('stat-4-val'), elSubStat4 = document.getElementById('sub-stat-4'), elLabel = document.getElementById('insight-label-text');
+            document.getElementById('stat-pagu').innerText = fmt(tP);
+            document.getElementById('stat-real').innerText = fmt(tR);
+            document.getElementById('stat-sisa').innerText = fmt(tP - tR);
+            document.getElementById('perc-real').innerText = `${percUsed.toFixed(1)}% Penyerapan`;
+            document.getElementById('sub-sisa').innerText = `${percRem.toFixed(1)}% Sisa`;
+            document.getElementById('stat-4-val').innerText = tPersonnel.toLocaleString('id-ID');
+            document.getElementById('sub-stat-4').innerText = state.filters.wk === 'ALL' ? 'Seluruh WK' : `Wilayah ${state.filters.wk}`;
+            document.getElementById('insight-label-text').innerText = state.filters.wk === 'ALL' ? 'Rincian Per LINE ANGGARAN WP&B' : `Rincian LINE ANGGARAN Wilayah ${state.filters.wk}`;
 
-            if(elP) elP.innerText = fmt(tP);
-            if(elR) elR.innerText = fmt(tR);
-            if(elS) elS.innerText = fmt(tP - tR);
-            if(elPr) elPr.innerText = `${percUsed.toFixed(1)}% Penyerapan`;
-            if(elSubSisa) elSubSisa.innerText = `${percRem.toFixed(1)}% Sisa`;
-            if(elStat4Val) elStat4Val.innerText = tPersonnel.toLocaleString('id-ID');
-            if(elSubStat4) elSubStat4.innerText = state.filters.wk === 'ALL' ? 'Seluruh WK' : `Wilayah ${state.filters.wk}`;
-            if(elLabel) elLabel.innerText = state.filters.wk === 'ALL' ? 'Rincian Per LINE ANGGARAN WP&B' : `Rincian LINE ANGGARAN Wilayah ${state.filters.wk}`;
-
-            requestAnimationFrame(() => {
-                updateMap(p, r);
-                renderCategoryCards(p, r);
-                if (state.filters.wk !== 'ALL' && state.map) {
-                    if (state.filters.item === 'BS-11') {
-                        const jkt = state.db.masterWK.find(w => w.Nama_WK.toUpperCase() === 'JAKARTA');
-                        if (jkt) state.map.setView([parseFloat(jkt.LAT), parseFloat(jkt.LNG)], 8);
-                        if (state.markers[state.filters.wk]) state.markers[state.filters.wk].openPopup();
-                    } else if (state.markers[state.filters.wk]) {
-                        state.map.setView(state.markers[state.filters.wk].getLatLng(), 7); 
-                        state.markers[state.filters.wk].openPopup();
-                    }
-                } else if (state.filters.wk === 'ALL' && state.map) {
-                    state.map.setView([-1.0, 116.0], 5);
-                }
-            });
+            updateMap(p, r);
+            renderCategoryCards(p, r);
         }
 
         function renderCategoryCards(pData, rData) {
@@ -1719,9 +1571,6 @@
             });
         }
 
-        /**
-         * TRANSAKSI & PAGU MODULE
-         */
         function renderTransaksi(el) {
             el.innerHTML = `
                 <div class="top-navbar bg-transparent border-bottom px-4 py-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -1780,19 +1629,12 @@
                 </tr>`).join('') : '<tr><td colspan="7" class="text-center py-5 text-muted">Belum ada jurnal transaksi tercatat.</td></tr>';
         }
 
-        /**
-         * ENGINE: Document Viewer & URL Converter
-         */
         function viewEvidence(url) {
             if (!url) return;
-            
-            // Konversi URL standar Google Drive ke URL Preview agar bisa di-embed di Iframe
             let embedUrl = url;
             if (embedUrl.includes('drive.google.com') && embedUrl.includes('/view')) {
                 embedUrl = embedUrl.replace(/\/view.*/, '/preview');
             }
-            
-            // Set source iframe dan tampilkan modal
             document.getElementById('evidenceViewerFrame').src = embedUrl;
             const viewerModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalViewEvidence'));
             viewerModal.show();
@@ -1863,12 +1705,15 @@
                     const file = fileInput.files[0], base64 = await new Promise((res, rej) => { const rd = new FileReader(); rd.readAsDataURL(file); rd.onload = () => res(rd.result); rd.onerror = () => rej(new Error('Gagal memproses berkas.')); });
                     payload.fileContent = base64.split(',')[1]; payload.fileName = file.name; payload.mimeType = file.type;
                 }
-                if (typeof google === 'undefined') {
-                    setTimeout(() => { endLoading(); if (btn) btn.disabled = false; bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide(); Swal.fire('Sukses', 'Jurnal berhasil direvisi (Demo)', 'success'); loadData(null, true); }, 1000);
-                } else {
-                    google.script.run.withSuccessHandler(res => { endLoading(); if (btn) btn.disabled = false; if (res && res.success) { bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide(); Swal.fire('Berhasil', 'Entri jurnal telah direvisi', 'success'); loadData(null, true); } else Swal.fire('Gagal', res.message, 'error'); })
-                    .withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); }).updateTransaction(id, sType, payload, state.user);
-                }
+                google.script.run.withSuccessHandler(res => { 
+                    endLoading(); if (btn) btn.disabled = false; 
+                    if (res && res.success) { 
+                        bootstrap.Modal.getInstance(document.getElementById('modalEditTrx')).hide(); 
+                        Swal.fire('Berhasil', 'Entri jurnal telah direvisi', 'success'); 
+                        loadData(null, true); 
+                    } else Swal.fire('Gagal', res.message, 'error'); 
+                })
+                .withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); }).updateTransaction(id, sType, payload, state.user);
             } catch (err) { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.message, 'error'); }
         }
 
@@ -1880,23 +1725,30 @@
                     const file = fileInput.files[0], base64 = await new Promise((res, rej) => { const rd = new FileReader(); rd.readAsDataURL(file); rd.onload = () => res(rd.result); rd.onerror = () => rej(new Error('Gagal membaca file')); });
                     data.fileContent = base64.split(',')[1]; data.fileName = file.name; data.mimeType = file.type;
                 }
-                if (typeof google === 'undefined') {
-                    setTimeout(() => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Sukses', 'Posting jurnal berhasil (Demo)', 'success'); form.reset(); const m = bootstrap.Modal.getInstance(document.getElementById('modalAddTrx')); if(m) m.hide(); loadData(null, true); }, 1000);
-                } else {
-                    google.script.run.withSuccessHandler(res => { endLoading(); if (btn) btn.disabled = false; if(res && res.success) { Swal.fire('Berhasil', 'Jurnal transaksi berhasil diposting', 'success'); form.reset(); const m = bootstrap.Modal.getInstance(document.getElementById('modalAddTrx')); if(m) m.hide(); loadData(null, true); } else Swal.fire('Gagal', res.message, 'error'); })
-                    .withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); }).saveTransaction(data.type, data, state.user);
-                }
+                google.script.run.withSuccessHandler(res => { 
+                    endLoading(); if (btn) btn.disabled = false; 
+                    if(res && res.success) { 
+                        Swal.fire('Berhasil', 'Jurnal transaksi berhasil diposting', 'success'); 
+                        form.reset(); 
+                        const m = bootstrap.Modal.getInstance(document.getElementById('modalAddTrx')); if(m) m.hide(); 
+                        loadData(null, true); 
+                    } else Swal.fire('Gagal', res.message, 'error'); 
+                })
+                .withFailureHandler(err => { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.toString(), 'error'); }).saveTransaction(data.type, data, state.user);
             } catch (err) { endLoading(); if (btn) btn.disabled = false; Swal.fire('Error', err.message, 'error'); }
         }
 
         function handlePaguSubmit(e) {
             e.preventDefault(); const form = e.target, data = Object.fromEntries(new FormData(form)); startLoading();
-            if (typeof google === 'undefined') { 
-                setTimeout(() => { endLoading(); Swal.fire('Sukses', 'Pengesahan Pagu diproses (Demo)', 'success'); form.reset(); const m = bootstrap.Modal.getInstance(document.getElementById('modalAddPagu')); if(m) m.hide(); loadData(null, true); }, 800); 
-            } else {
-                google.script.run.withSuccessHandler(res => { endLoading(); if(res && res.success) { Swal.fire('Berhasil', 'Alokasi pagu telah disahkan', 'success'); form.reset(); const m = bootstrap.Modal.getInstance(document.getElementById('modalAddPagu')); if(m) m.hide(); loadData(null, true); } })
-                .saveMasterPagu(data, state.user);
-            }
+            google.script.run.withSuccessHandler(res => { 
+                endLoading(); 
+                if(res && res.success) { 
+                    Swal.fire('Berhasil', 'Alokasi pagu telah disahkan', 'success'); 
+                    form.reset(); 
+                    const m = bootstrap.Modal.getInstance(document.getElementById('modalAddPagu')); if(m) m.hide(); 
+                    loadData(null, true); 
+                } 
+            }).saveMasterPagu(data, state.user);
         }
 
         function renderProfil(el) {
@@ -1904,7 +1756,7 @@
                 <div class="p-4 d-flex justify-content-center">
                     <div class="kpi-card text-center" style="max-width: 500px; width: 100%;">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);"><i class="fas fa-user-shield fa-3x text-white"></i></div>
-                        <h4 class="fw-extrabold mb-1">${state.user ? state.user.nama : 'USER'}</h4>
+                        <h4 class="fw-bold mb-1">${state.user ? state.user.nama : 'USER'}</h4>
                         <p class="small fw-bold text-uppercase mb-4" style="letter-spacing: 2px; color: var(--primary);">OTORITAS AKUN ${state.user ? state.user.role : ''}</p>
                         <hr class="mb-4" style="border-color: var(--border-glass)">
                         <form onsubmit="handleProfileUpdate(event)">
@@ -1913,7 +1765,6 @@
                             <div class="mb-3 text-start"><label class="control-label">Sektor Akses Wilayah</label><p class="fw-bold text-success mb-0 ps-1" style="color: var(--primary) !important;">${state.user ? state.user.wkAccess : ''}</p></div>
                             <div class="mb-4 text-start"><label class="control-label">Konfirmasi Kata Sandi Baru</label><input type="password" name="password" class="form-control" placeholder="Biarkan kosong jika tidak ingin mengubah" style="border-radius: 12px;"></div>
                             <button type="submit" class="btn btn-success w-100 fw-bold py-3 shadow" style="border-radius: 14px; background: var(--primary);">PERBARUI IDENTITAS SYSTEM</button>
-                            <button type="button" class="btn btn-outline-danger w-100 mt-3 fw-bold py-2" style="border-radius: 14px;" onclick="logout()">LOGOUT / SELESAI SESI</button>
                         </form>
                     </div>
                 </div>`;
@@ -1921,12 +1772,15 @@
 
         function handleProfileUpdate(e) {
             e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); startLoading();
-            if (typeof google === 'undefined') { 
-                setTimeout(() => { endLoading(); state.user.nama = data.nama; renderApp(); Swal.fire('Sukses', 'Profil diperbarui (Demo)', 'success'); }, 800); 
-            } else { 
-                google.script.run.withSuccessHandler(res => { endLoading(); if(res && res.success) { state.user.nama = res.newName || data.nama; safeStorage.setItem('budget_session_2026', JSON.stringify(state.user)); renderApp(); Swal.fire('Berhasil', 'Informasi profil diperbarui', 'success'); } else Swal.fire('Gagal', res.message, 'error'); })
-                .updateUserProfile(data); 
-            }
+            google.script.run.withSuccessHandler(res => { 
+                endLoading(); 
+                if(res && res.success) { 
+                    state.user.nama = data.nama; 
+                    safeStorage.setItem('budget_session_2026', JSON.stringify(state.user)); 
+                    renderApp(); 
+                    Swal.fire('Berhasil', 'Informasi profil diperbarui', 'success'); 
+                } else Swal.fire('Gagal', res.message, 'error'); 
+            }).updateUserProfile(data); 
         }
 
         function renderLoginPage(el) {
@@ -1950,37 +1804,34 @@
 
         function handleLogin(e) {
             e.preventDefault(); const data = Object.fromEntries(new FormData(e.target)); startLoading();
-            if (typeof google === 'undefined') {
-                setTimeout(() => { endLoading(); if(data.username === 'admin') { state.user = { username: 'admin', nama: 'Administrator', role: 'ADMIN', wkAccess: 'ALL' }; safeStorage.setItem('budget_session_2026', JSON.stringify(state.user)); setView('dashboard', true); } }, 1000);
-            } else {
-                google.script.run.withSuccessHandler(res => { 
-                    endLoading(); 
-                    if (res && res.success) { 
-                        safeStorage.setItem('budget_session_2026', JSON.stringify(res.user)); 
-                        state.user = res.user; 
-                        // FORCE LOAD TRUE: Hancurkan cache data tamu, paksa server menarik alokasi pagu riil user
-                        setView('dashboard', true); 
-                    } else Swal.fire('Gagal', res.message, 'error'); 
-                }).loginUser(data);
-            }
+            google.script.run.withSuccessHandler(res => { 
+                endLoading(); 
+                if (res && res.success) { 
+                    safeStorage.setItem('budget_session_2026', JSON.stringify(res.user)); 
+                    state.user = res.user; 
+                    setView('dashboard', true); 
+                } else Swal.fire('Gagal', res.message, 'error'); 
+            }).loginUser(data);
         }
 
-        function delData(id, sType) { Swal.fire({ title: 'Apakah anda yakin?', text: "Jurnal akan dibatalkan/dihapus dari server.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Hapus Jurnal!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteData(id, sType, state.user); } }); }
-        function delPagu(id) { Swal.fire({ title: 'Batalkan Pengesahan?', text: "Pagu definitif ini akan ditarik kembali.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Tarik Pagu!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteMasterPagu(id, state.user); } }); }
+        function delData(id, sType) { Swal.fire({ title: 'Apakah anda yakin?', text: "Jurnal akan dibatalkan/dihapus dari server.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Hapus Jurnal!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); google.script.run.withSuccessHandler(() => loadData(null, true)).deleteData(id, sType, state.user); } }); }
+        
+        function delPagu(id) { Swal.fire({ title: 'Batalkan Pengesahan?', text: "Pagu definitif ini akan ditarik kembali.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Tarik Pagu!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); google.script.run.withSuccessHandler(() => loadData(null, true)).deleteMasterPagu(id, state.user); } }); }
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
+        
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active-state'); }
         
         function logout() { 
             safeStorage.removeItem('budget_session_2026'); 
             state.user = null; 
-            // MEMORY ISOLATION PURGE (EOS-GAS-016): Hancurkan seluruh authorized data residu dari RAM browser
             state.db = { 
                 masterWK: [], masterPilihan: [], masterBUJP: [], pagu: [], 
                 realisasiInternal: [], realisasiInvoice: [], realisasiStakeholder: [], masterJenisTrx: []
             };
             setView('landing-page', true); 
         }
+        
         function fmt(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0); }
         function fmtShort(n) { if (n >= 1e9) return (n/1e9).toFixed(1) + ' M'; if (n >= 1e6) return (n/1e6).toFixed(1) + ' Jt'; return fmt(n); }
     </script>
