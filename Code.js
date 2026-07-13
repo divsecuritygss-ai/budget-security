@@ -74,22 +74,34 @@ function setupDatabase() {
 // FUNGSI UTAMA: doGet (Mendukung Web App & Jalur REST API Engine)
 // -------------------------------------------------------------------------
 function doGet(e) {
-  if (e && e.parameter && e.parameter.action === "getAppData") {
-    // SECURITY FALLBACK SYNC: Cegah alokasi data terpotong menjadi 0 akibat delay handshake klien
-    const clientUsername = e.parameter.username || "";
-    let secureRole = e.parameter.role;
-    let secureWkAccess = e.parameter.wkAccess;
+  // Amankan pembacaan objek parameter runtime
+  var params = (e && e.parameter) ? e.parameter : {};
+  
+  if (params.action === "getAppData") {
+    // Jalankan proteksi fallback jika parameter peran dikirim kosong oleh Vercel
+    const clientUsername = params.username || "";
+    let secureRole = params.role || "GUEST";
+    let secureWkAccess = params.wkAccess || "NONE";
 
-    if (clientUsername) {
-      const serverCheck = verifyServerSideRole(clientUsername);
-      if (serverCheck.active) {
-        secureRole = serverCheck.user.role;
-        secureWkAccess = serverCheck.user.wkAccess;
+    // Lakukan validasi ketat jika klien mengirimkan identitas pengguna
+    if (clientUsername && typeof verifyServerSideRole === "function") {
+      try {
+        const serverCheck = verifyServerSideRole(clientUsername);
+        if (serverCheck && serverCheck.active && serverCheck.user) {
+          secureRole = serverCheck.user.role || secureRole;
+          secureWkAccess = serverCheck.user.wkAccess || secureWkAccess;
+        }
+      } catch (err) {
+        // Log interupsi internal tanpa menghentikan aliran data pipa HTTP
+        Logger.log("Security Handshake Warning: " + err.toString());
       }
     }
 
+    // Eksekusi tarikan data utama berdasarkan parameter otoritas yang sah
     var responseData = getAppData(secureRole, secureWkAccess);
-    return ContentService.createTextOutput(JSON.stringify(responseData))
+    
+    // Wajib dibungkus text output JSON murni untuk meruntuhkan blokade CORS browser
+    return ContentService.createTextOutput(JSON.stringify(responseData || {}))
         .setMimeType(ContentService.MimeType.JSON);
   }
 
