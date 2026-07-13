@@ -6,8 +6,10 @@
     <title>SIMA 2026 | Divisi Keamanan</title>
     
     <meta name="theme-color" content="#030712">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
     <link rel="manifest" href="manifest.json">
     
     <!-- CSS Dependencies -->
@@ -1001,6 +1003,19 @@
                         success: null, failure: null,
                         withSuccessHandler: function(cb) { this.success = cb; return this; },
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
+                        
+                        // Internal Helper: Mencegah Opaque Response dengan standard Plain Text
+                        _fetchGAS: function(action, payload) {
+                            return fetch(GAS_SECURITY_API_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                body: JSON.stringify({ action: action, data: payload })
+                            }).then(res => {
+                                if (!res.ok) throw new Error("Kegagalan Server/Jaringan");
+                                return res.json();
+                            });
+                        },
+                        
                         getAppData: function(role, wkAccess) {
                             const url = `${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`;
                             fetch(url, { redirect: 'follow' })
@@ -1009,9 +1024,7 @@
                                     return res.json();
                                 })
                                 .then(d => {
-                                    if (d && !d.error) {
-                                        localStorage.setItem("cache_security_db", JSON.stringify(d));
-                                    }
+                                    if (d && !d.error) localStorage.setItem("cache_security_db", JSON.stringify(d));
                                     if (this.success) this.success(d);
                                 })
                                 .catch(err => {
@@ -1025,37 +1038,37 @@
                                 });
                         },
                         loginUser: function(form) {
-                            fetchGAS('loginUser', { form: form })
+                            this._fetchGAS('loginUser', { form: form })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         saveMasterPagu: function(payload, userData) {
-                            fetchGAS('saveMasterPagu', { payload: payload, userData: userData })
+                            this._fetchGAS('saveMasterPagu', { payload: payload, userData: userData })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         deleteMasterPagu: function(id, userData) {
-                            fetchGAS('deleteMasterPagu', { id: id, userData: userData })
+                            this._fetchGAS('deleteMasterPagu', { id: id, userData: userData })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         saveTransaction: function(type, payload, userData) {
-                            fetchGAS('saveTransaction', { type: type, payload: payload, userData: userData })
+                            this._fetchGAS('saveTransaction', { type: type, payload: payload, userData: userData })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         updateTransaction: function(id, sType, payload, userData) {
-                            fetchGAS('updateTransaction', { id: id, sType: sType, payload: payload, userData: userData })
+                            this._fetchGAS('updateTransaction', { id: id, sType: sType, payload: payload, userData: userData })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         deleteData: function(id, sType, userData) {
-                            fetchGAS('deleteData', { id: id, sType: sType, userData: userData })
+                            this._fetchGAS('deleteData', { id: id, sType: sType, userData: userData })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         },
                         updateUserProfile: function(form) {
-                            fetchGAS('updateUserProfile', { form: form })
+                            this._fetchGAS('updateUserProfile', { form: form })
                                 .then(d => { if(this.success) this.success(d); })
                                 .catch(err => { if(this.failure) this.failure(err); });
                         }
@@ -1088,9 +1101,6 @@
         const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
         window.onload = function() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(() => console.log("SW offline configuration initialized"));
-            }
             checkLoginState();
         };
 
@@ -1415,9 +1425,9 @@
     // Inisialisasi Peta Baru dengan Koordinat Dasar (Default: Geografis Tengah Indonesia)
     const mapInstance = L.map('dashMap').setView([-2.5489, 118.0149], 5);
 
-    // Memuat Tile Layer OpenStreetMap Gratis sesuai Standar Ekosistem EASE-OS (EOS-PATTERN-038)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Memuat Tile Layer CartoDB Dark Matter untuk Stabilitas Jaringan Ekstrim & Tema Gelap (EOS-PATTERN-038)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
     }).addTo(mapInstance);
 
     // Menyimpan kembali instance peta ke dalam Global State Management Aplikasi
