@@ -1,20 +1,20 @@
 {
-  "name": "Sistem Informasi Manajemen Anggaran (SIMA) - Divisi Keamanan",
-  "short_name": "SIMA Keamanan",
-  "description": "Sistem Informasi Manajemen Anggaran & Operasional - Divisi Keamanan",
-  "start_url": "/",
+  "name": "Sistem Informasi Monitoring Anggaran - SIMA",
+  "short_name": "SIMA",
+  "description": "Enterprise Budget Monitoring and Alocation Matrix System",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#030712",
-  "theme_color": "#030712",
-  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1084/1084223.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5674/5674261.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1084/1084223.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5674/5674261.png",
       "sizes": "512x512",
       "type": "image/png"
     }
