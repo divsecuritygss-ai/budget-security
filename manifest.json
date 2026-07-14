@@ -1,0 +1,18 @@
+{
+  "name": "SIMA 2026 | Divisi Keamanan",
+  "short_name": "SIMA 2026",
+  "description": "Sistem Informasi Manajemen Anggaran Divisi Keamanan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/508/508284.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
