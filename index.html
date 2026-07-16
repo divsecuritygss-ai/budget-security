@@ -1102,8 +1102,36 @@
                                 });
                         },
                         updateTransaction: function(id, sType, payload, userData) {
+                            const txData = { action: 'update', id: id, sType: sType, payload: payload, userData: userData, timestamp: Date.now() };
+                            
+                            // Proteksi Jika User Melakukan Edit Saat Kehilangan Jaringan
+                            if (!navigator.onLine) {
+                                let queue = JSON.parse(localStorage.getItem("offline_transactions") || "[]");
+                                queue.push(txData);
+                                localStorage.setItem("offline_transactions", JSON.stringify(queue));
+                                
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Revisi Disimpan Offline',
+                                    text: 'Koneksi terputus. Perubahan data aman tersimpan di memori lokal dan akan di-sync otomatis begitu sinyal kembali!',
+                                    timer: 4000
+                                });
+                                
+                                if (this.success) this.success({ success: true, offline: true });
+                                return;
+                            }
+
+                            // Aliran Eksekusi Normal Jika Online
                             fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateTransaction', data: { id: id, sType: sType, payload: payload, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); })
+                                .catch(err => {
+                                    // Fallback aman jika koneksi tiba-tiba terputus saat proses pengiriman data
+                                    let queue = JSON.parse(localStorage.getItem("offline_transactions") || "[]");
+                                    queue.push(txData);
+                                    localStorage.setItem("offline_transactions", JSON.stringify(queue));
+                                    Swal.fire('Sinyal Tidak Stabil', 'Gagal memperbarui cloud server. Revisi dialihkan ke antrean offline lokal.', 'warning');
+                                    if (this.success) this.success({ success: true, offline: true });
+                                });
                         },
                         deleteData: function(id, sType, userData) {
                             fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
@@ -1160,40 +1188,101 @@
         };
 
         /**
-         * ENGINE SINKRONISASI OTOMATIS: Mengunggah seluruh antrean data jurnal offline ke database cloud
+         * ENGINE SINKRONISASI INTERAKTIF: Memproses data offline dengan persetujuan Pop-up Pengguna
          */
         function syncOfflineTransactions() {
             if (!navigator.onLine) return;
-            let queue = JSON.parse(localStorage.getItem("offline_transactions") || "[]");
+            var queue = JSON.parse(localStorage.getItem("offline_transactions") || "[]");
             if (queue.length === 0) return;
 
-            startLoading();
-            let promises = queue.map(tx => {
-                return fetch(GAS_SECURITY_API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'saveTransaction', data: { type: tx.type, payload: tx.payload, userData: tx.userData } }) 
-                })
-                .then(res => res.json())
-                .then(d => d.result && d.result.success)
-                .catch(() => false);
-            });
+            Swal.fire({
+                title: 'Koneksi Internet Pulih!',
+                text: 'Terdeteksi ' + queue.length + ' transaksi yang Anda input saat offline. Apakah Anda ingin menyimpannya ke Google Sheets sekarang?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: '<i class="fas fa-cloud-arrow-up me-2"></i>Iya, Simpan Data',
+                cancelButtonText: '<i class="fas fa-trash-can me-2"></i>Tidak, Abaikan',
+                allowOutsideClick: false
+            }).then(function(choice) {
+                if (choice.isConfirmed) {
+                    startLoading();
+                    var savedItemsList = [];
+                    var failedQueue = [];
+                    var pointer = 0;
 
-            Promise.all(promises).then(results => {
-                endLoading();
-                let allSuccess = results.every(r => r === true);
-                if (allSuccess) {
+                    function uploadNextItem() {
+                        if (pointer >= queue.length) {
+                            endLoading();
+                            localStorage.setItem("offline_transactions", JSON.stringify(failedQueue));
+                            
+                            if (savedItemsList.length > 0) {
+                                var itemsHtml = '<ol class="text-start small text-white-50" style="padding-left: 20px;">' + 
+                                               savedItemsList.map(function(item) { return '<li>' + item + '</li>'; }).join('') + 
+                                               '</ol>';
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sinkronisasi Berhasil!',
+                                    html: 'Berikut rincian data yang sukses dibukukan ke Cloud:<br/><br/>' + itemsHtml,
+                                    confirmButtonColor: '#10b981'
+                                });
+                            }
+                            if (failedQueue.length > 0) {
+                                Swal.fire('Gagal Sebagian', failedQueue.length + ' data gagal terupload karena gangguan server. Sistem menyimpannya kembali ke antrean lokal.', 'warning');
+                            }
+                            loadData(null, true);
+                            return;
+                        }
+
+                        var tx = queue[pointer];
+                        var bodyPayload = {};
+                        var itemLabel = "";
+
+                        if (tx.action === 'update') {
+                            bodyPayload = { action: 'updateTransaction', data: { id: tx.id, sType: tx.sType, payload: tx.payload, userData: tx.userData } };
+                            itemLabel = '[REVISI] ' + (tx.payload.WK || 'Wilayah') + ' - Uraian: ' + (tx.payload.Keterangan || 'N/A') + ' (Rp ' + Number(tx.payload.Jumlah || 0).toLocaleString('id-ID') + ')';
+                        } else {
+                            bodyPayload = { action: 'saveTransaction', data: { type: tx.type, payload: tx.payload, userData: tx.userData } };
+                            itemLabel = '[BARU] ' + (tx.payload.WK || 'Wilayah') + ' - Uraian: ' + (tx.payload.Keterangan || 'N/A') + ' (Rp ' + Number(tx.payload.Jumlah || 0).toLocaleString('id-ID') + ')';
+                        }
+
+                        fetch(GAS_SECURITY_API_URL, { 
+                            method: 'POST', 
+                            body: JSON.stringify(bodyPayload) 
+                        })
+                        .then(function(res) {
+                            if (!res.ok) throw new Error("Network response unstable");
+                            return res.json();
+                        })
+                        .then(function(d) {
+                            if (d && d.success && d.result && (d.result.success || d.result.success === undefined)) {
+                                savedItemsList.push(itemLabel);
+                            } else {
+                                failedQueue.push(tx);
+                            }
+                            pointer++;
+                            uploadNextItem();
+                        })
+                        .catch(function(err) {
+                            console.error("Item sync error:", err);
+                            failedQueue.push(tx);
+                            pointer++;
+                            uploadNextItem();
+                        });
+                    }
+
+                    uploadNextItem();
+
+                } else if (choice.dismiss === Swal.DismissReason.cancel) {
                     localStorage.removeItem("offline_transactions");
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Sinkronisasi Cloud Berhasil',
-                        text: `${queue.length} data jurnal offline berhasil diunggah dan dibukukan ke Google Sheets!`,
+                        icon: 'warning',
+                        title: 'Antrean Dihapus',
+                        text: 'Seluruh data transaksi offline diabaikan dan dibersihkan dari memori perangkat.',
+                        timer: 3000,
+                        showConfirmButton: false
                     });
-                    loadData(null, true);
-                } else {
-                    // Filter dan sisakan data yang gagal di-upload saja untuk dicoba kembali nanti
-                    let failedQueue = queue.filter((_, idx) => !results[idx]);
-                    localStorage.setItem("offline_transactions", JSON.stringify(failedQueue));
-                    Swal.fire('Sinkronisasi Parsial', 'Beberapa data antrean offline gagal diunggah karena kendala server. Sistem akan mencoba lagi.', 'warning');
                     loadData(null, true);
                 }
             });
