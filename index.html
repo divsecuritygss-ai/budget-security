@@ -1887,7 +1887,7 @@
                         <table class="popup-table">
                             <tr><td class="popup-label">BUJP</td><td class="popup-value">${displayBUJP}</td></tr>
                             <tr><td class="popup-label">Personil</td><td class="popup-value">${profileSource.PERSONNEL_COUNT || 0} orang</td></tr>
-                            <tr><td class="popup-label">Serapan</td><td class="popup-value" style="color: ${perc > 90 ? '#ef4444' : '#10b981'} !important; font-weight: 800;">${perc.toFixed(1)}%</td></tr>
+                            <tr><td class="popup-label">Serapan</td><td class="popup-value" style="color: ${perc > 90 ? '#ef4444' : '#10b981'} !important; font-weight: 800;">${perc.toFixed(2)}%</td></tr>
                             <tr><td class="popup-label">Akhir Kontrak</td><td class="popup-value">${formattedDate}</td></tr>
                             <tr><td class="popup-label">Sisa Waktu</td><td class="popup-value" style="color: #3b82f6 !important; font-weight: 700;">${displayRemaining}</td></tr>
                         </table>
@@ -2007,14 +2007,17 @@
             const filterPaguWkVal = document.getElementById('tableFilterPaguWK')?.value || 'ALL';
             if (filterPaguWkVal !== 'ALL') displayPagu = displayPagu.filter(x => x.WK === filterPaguWkVal);
             
-            body.innerHTML = displayPagu.map(p => `
+            body.innerHTML = displayPagu.map(p => {
+                const paguKey = p.ID || (p.WK + '||' + p.Deskripsi + '||' + p.Item);
+                return `
                 <tr>
                     <td class="px-4 fw-bold text-success" style="color: var(--primary) !important;">${p.WK}</td>
                     <td><span class="badge bg-dark text-white border" style="border-color: var(--border-glass) !important;">${p.Item}</span></td>
                     <td class="text-white-50">${p.Deskripsi}</td>
                     <td class="text-end fw-bold" style="color: var(--primary)">${fmt(p.Pagu)}</td>
-                    <td class="text-center"><button class="btn btn-sm text-danger border-0 bg-transparent" onclick="delPagu('${p.ID}')"><i class="fas fa-trash-can"></i></button></td>
-                </tr>`).join('') || '<tr><td colspan="5" class="text-center py-5 text-muted">Data alokasi pagu kosong.</td></tr>';
+                    <td class="text-center"><button class="btn btn-sm text-danger border-0 bg-transparent" onclick="delPagu('${paguKey}')"><i class="fas fa-trash-can"></i></button></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5" class="text-center py-5 text-muted">Data alokasi pagu kosong.</td></tr>';
         }
 
         function openEditTrx(id, sType) {
@@ -2144,7 +2147,46 @@
         }
 
         function delData(id, sType) { Swal.fire({ title: 'Apakah anda yakin?', text: "Jurnal akan dibatalkan/dihapus dari server.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Hapus Jurnal!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteData(id, sType, state.user); } }); }
-        function delPagu(id) { Swal.fire({ title: 'Batalkan Pengesahan?', text: "Pagu definitif ini akan ditarik kembali.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Tarik Pagu!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteMasterPagu(id, state.user); } }); }
+        function delPagu(id) {
+            if (!id) {
+                Swal.fire('Gagal', 'ID Pagu tidak valid atau tidak terdeteksi pada baris ini.', 'error');
+                return;
+            }
+            Swal.fire({
+                title: 'Batalkan Pengesahan?',
+                text: "Pagu definitif ini akan ditarik kembali dari database.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#1e293b',
+                confirmButtonText: 'Tarik Pagu!',
+                cancelButtonText: 'Batal'
+            }).then(r => {
+                if (r.isConfirmed) {
+                    startLoading();
+                    if (typeof google === 'undefined') {
+                        endLoading();
+                        loadData(null, true);
+                    } else {
+                        google.script.run
+                            .withSuccessHandler(res => {
+                                endLoading();
+                                if (res && res.success) {
+                                    Swal.fire('Berhasil', 'Alokasi Pagu berhasil ditarik/dihapus.', 'success');
+                                    loadData(null, true);
+                                } else {
+                                    Swal.fire('Gagal', res ? res.message : 'Terjadi kesalahan saat menghapus Pagu.', 'error');
+                                }
+                            })
+                            .withFailureHandler(err => {
+                                endLoading();
+                                Swal.fire('Error', err.toString(), 'error');
+                            })
+                            .deleteMasterPagu(id, state.user);
+                    }
+                }
+            });
+        }
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active-state'); }
