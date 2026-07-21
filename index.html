@@ -1780,8 +1780,8 @@
             if(elP) elP.innerText = fmt(tP);
             if(elR) elR.innerText = fmt(tR);
             if(elS) elS.innerText = fmt(tP - tR);
-            if(elPr) elPr.innerText = `${percUsed.toFixed(1)}% Penyerapan`;
-            if(elSubSisa) elSubSisa.innerText = `${percRem.toFixed(1)}% Sisa`;
+            if(elPr) elPr.innerText = `${percUsed.toFixed(2)}% Penyerapan`;
+            if(elSubSisa) elSubSisa.innerText = `${percRem.toFixed(2)}% Sisa`;
             if(elStat4Val) elStat4Val.innerText = tPersonnel.toLocaleString('id-ID');
             if(elSubStat4) elSubStat4.innerText = state.filters.wk === 'ALL' ? 'Seluruh WK' : `Wilayah ${state.filters.wk}`;
             if(elLabel) elLabel.innerText = state.filters.wk === 'ALL' ? 'Rincian Per LINE ANGGARAN WP&B' : `Rincian LINE ANGGARAN Wilayah ${state.filters.wk}`;
@@ -1821,7 +1821,7 @@
                     <div class="insight-card">
                         <div class="insight-header">
                             <h5 class="insight-title">${name}</h5>
-                            <span class="insight-perc text-${colorClass}">${perc.toFixed(1)}%</span>
+                            <span class="insight-perc text-${colorClass}">${perc.toFixed(2)}%</span>
                         </div>
                         <div class="insight-stats">
                             <div>
