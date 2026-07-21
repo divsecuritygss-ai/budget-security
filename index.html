@@ -972,6 +972,10 @@
                                 <select name="WK" id="paguWK" class="form-select" required></select>
                             </div>
                             <div class="col-md-6">
+                                <label class="control-label">Mitra BUJP</label>
+                                <select name="BUJP" id="paguBUJP" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
                                 <label class="control-label">Item Budget</label>
                                 <select name="Item" class="form-select">
                                     <option value="BS-8">BS-8</option>
@@ -1032,7 +1036,7 @@
                         withSuccessHandler: function(cb) { this.success = cb; return this; },
                         withFailureHandler: function(cb) { this.failure = cb; return this; },
                         getAppData: function(role, wkAccess) {
-                            const url = `${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}`;
+                        const url = `${GAS_SECURITY_API_URL}?action=getAppData&role=${encodeURIComponent(role)}&wkAccess=${encodeURIComponent(wkAccess)}&_t=${Date.now()}`;
                             
                             // Gunakan {redirect: 'follow'} untuk memastikan fetch mengikuti redirect dari Google
                             fetch(url, { redirect: 'follow' })
@@ -1135,7 +1139,7 @@
                         },
                         deleteData: function(id, sType, userData) {
                             fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteData', data: { id: id, sType: sType, userData: userData } }) })
-                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result); }).catch(err => { if(this.failure) this.failure(err); });
+                                .then(res => res.json()).then(d => { if(this.success) this.success(d.result || d); }).catch(err => { if(this.failure) this.failure(err); });
                         },
                         updateUserProfile: function(form) {
                             fetch(GAS_SECURITY_API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateUserProfile', data: { form: form } }) })
@@ -1715,6 +1719,7 @@
         function populateFilters() {
             if(!state.db) return;
             const listWK = state.db?.masterWK || [];
+            const listBUJP = state.db?.masterBUJP || [];
             const listPilihan = state.db?.masterPilihan || [];
             const listJenis = state.db?.masterJenisTrx || [];
 
@@ -1726,6 +1731,11 @@
                     el.innerHTML = prefix + listWK.map(w => `<option value="${w.Nama_WK}">${w.Nama_WK}</option>`).join('');
                 }
             });
+
+            const bujpEl = document.getElementById('paguBUJP');
+            if (bujpEl) {
+                bujpEl.innerHTML = listBUJP.map(b => `<option value="${b.Nama_BUJP}">${b.Nama_BUJP}</option>`).join('');
+            }
 
             const detailSelectors = ['filterDetail', 'tableFilterTrxDetail', 'editTrxPilihan', 'trxPilihan', 'paguDeskripsi'];
             detailSelectors.forEach(id => {
@@ -1909,7 +1919,7 @@
                         <div class="control-item"><select id="tableFilterTrxItem" class="form-select-pro" onchange="renderTrxTable()" style="min-width: 150px; height: 40px;"><option value="ALL">— Semua Item —</option><option value="BS-8">BS-8</option><option value="BS-11">BS-11</option></select></div>
                         <div class="control-item"><select id="tableFilterTrxDetail" class="form-select-pro" onchange="renderTrxTable()" style="min-width: 200px; height: 40px;"><option value="ALL">— Semua Line Anggaran —</option></select></div>
                     </div>
-                    <button class="btn btn-success fw-bold px-4 shadow-lg d-flex align-items-center gap-2" style="border-radius: 12px; height: 40px; background: var(--primary)" data-bs-toggle="modal" data-bs-target="#modalAddTrx" onclick="document.getElementById('addTrxDate').value = new Date().toISOString().split('T')[0];">
+                    <button class="btn btn-success fw-bold px-4 shadow-lg d-flex align-items-center gap-2" style="border-radius: 12px; height: 40px; background: var(--primary)" data-bs-toggle="modal" data-bs-target="#modalAddTrx" onclick="document.getElementById('trxForm').reset(); if(document.getElementById('evFile')) document.getElementById('evFile').value = ''; document.getElementById('addTrxDate').value = new Date().toISOString().split('T')[0];">
                         <i class="fas fa-plus-circle"></i> POSTING JURNAL BARU
                     </button>
                 </div>
@@ -1991,7 +2001,7 @@
                     <div class="viz-card overflow-hidden p-0 shadow border-0 bg-transparent" style="border-radius: 16px;">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0" style="font-size: 13px;">
-                                <thead><tr><th class="px-4">WILAYAH</th><th>ITEM</th><th>LINE ANGGARAN WP&B</th><th class="text-end">PAGU DEFINITIF</th><th class="text-center">AKSI</th></tr></thead>
+                                <thead><tr><th class="px-4">WILAYAH</th><th>BUJP</th><th>ITEM</th><th>LINE ANGGARAN WP&B</th><th class="text-end">PAGU DEFINITIF</th><th class="text-center">AKSI</th></tr></thead>
                                 <tbody id="paguBody"></tbody>
                             </table>
                         </div>
@@ -2008,16 +2018,20 @@
             if (filterPaguWkVal !== 'ALL') displayPagu = displayPagu.filter(x => x.WK === filterPaguWkVal);
             
             body.innerHTML = displayPagu.map(p => {
-                const paguKey = p.ID || (p.WK + '||' + p.Deskripsi + '||' + p.Item);
-                return `
-                <tr>
-                    <td class="px-4 fw-bold text-success" style="color: var(--primary) !important;">${p.WK}</td>
-                    <td><span class="badge bg-dark text-white border" style="border-color: var(--border-glass) !important;">${p.Item}</span></td>
-                    <td class="text-white-50">${p.Deskripsi}</td>
-                    <td class="text-end fw-bold" style="color: var(--primary)">${fmt(p.Pagu)}</td>
-                    <td class="text-center"><button class="btn btn-sm text-danger border-0 bg-transparent" onclick="delPagu('${paguKey}')"><i class="fas fa-trash-can"></i></button></td>
-                </tr>`;
-            }).join('') || '<tr><td colspan="5" class="text-center py-5 text-muted">Data alokasi pagu kosong.</td></tr>';
+              const itemVal = p.Item || p.Iter || '';
+              const bujpVal = p.BUJP || '';
+              const rawKey = p.ID || (p.WK + '||' + bujpVal + '||' + p.Deskripsi + '||' + itemVal);
+              const escapedKey = String(rawKey).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+              return `
+              <tr>
+                  <td class="px-4 fw-bold text-success" style="color: var(--primary) !important;">${p.WK}</td>
+                  <td class="text-white">${bujpVal || '-'}</td>
+                  <td><span class="badge bg-dark text-white border" style="border-color: var(--border-glass) !important;">${itemVal}</span></td>
+                  <td class="text-white-50">${p.Deskripsi}</td>
+                  <td class="text-end fw-bold" style="color: var(--primary)">${fmt(p.Pagu)}</td>
+                  <td class="text-center"><button class="btn btn-sm text-danger border-0 bg-transparent" onclick="delPagu('${escapedKey}')"><i class="fas fa-trash-can"></i></button></td>
+              </tr>`;
+          }).join('') || '<tr><td colspan="6" class="text-center py-5 text-muted">Data alokasi pagu kosong.</td></tr>';
         }
 
         function openEditTrx(id, sType) {
@@ -2027,6 +2041,7 @@
             else if (sType === 'stakeholder') data = state.db.realisasiStakeholder.find(x => x.ID === id);
             if (!data) return;
             populateFilters(); 
+            if(document.getElementById('editTrxFile')) document.getElementById('editTrxFile').value = '';
             document.getElementById('editTrxId').value = id; document.getElementById('editTrxType').value = sType;
             document.getElementById('editTrxDate').value = data.Tanggal; document.getElementById('editTrxWK').value = data.WK;
             document.getElementById('editTrxBUJP').value = data.BUJP; document.getElementById('editTrxKet').value = data.No_Invoice || data.Keterangan || "";
@@ -2146,20 +2161,19 @@
             }
         }
 
-        function delData(id, sType) { Swal.fire({ title: 'Apakah anda yakin?', text: "Jurnal akan dibatalkan/dihapus dari server.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#1e293b', confirmButtonText: 'Hapus Jurnal!', cancelButtonText: 'Batal' }).then(r => { if(r.isConfirmed) { startLoading(); if (typeof google === 'undefined') { endLoading(); loadData(null, true); } else google.script.run.withSuccessHandler(() => loadData(null, true)).deleteData(id, sType, state.user); } }); }
-        function delPagu(id) {
+        function delData(id, sType) {
             if (!id) {
-                Swal.fire('Gagal', 'ID Pagu tidak valid atau tidak terdeteksi pada baris ini.', 'error');
+                Swal.fire('Gagal', 'ID Transaksi tidak valid.', 'error');
                 return;
             }
             Swal.fire({
-                title: 'Batalkan Pengesahan?',
-                text: "Pagu definitif ini akan ditarik kembali dari database.",
+                title: 'Apakah anda yakin?',
+                text: "Jurnal akan dibatalkan/dihapus dari server.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#1e293b',
-                confirmButtonText: 'Tarik Pagu!',
+                confirmButtonText: 'Hapus Jurnal!',
                 cancelButtonText: 'Batal'
             }).then(r => {
                 if (r.isConfirmed) {
@@ -2172,21 +2186,72 @@
                             .withSuccessHandler(res => {
                                 endLoading();
                                 if (res && res.success) {
-                                    Swal.fire('Berhasil', 'Alokasi Pagu berhasil ditarik/dihapus.', 'success');
+                                    Swal.fire('Berhasil', 'Jurnal transaksi berhasil dihapus.', 'success');
                                     loadData(null, true);
                                 } else {
-                                    Swal.fire('Gagal', res ? res.message : 'Terjadi kesalahan saat menghapus Pagu.', 'error');
+                                    Swal.fire('Gagal', res ? res.message : 'Gagal menghapus data dari server.', 'error');
                                 }
                             })
                             .withFailureHandler(err => {
                                 endLoading();
                                 Swal.fire('Error', err.toString(), 'error');
                             })
-                            .deleteMasterPagu(id, state.user);
+                            .deleteData(id, sType, state.user);
                     }
                 }
             });
         }
+        function delPagu(id) {
+    if (!id) {
+        Swal.fire('Gagal', 'ID Pagu tidak valid atau tidak terdeteksi pada baris ini.', 'error');
+        return;
+    }
+    Swal.fire({
+        title: 'Batalkan Pengesahan?',
+        text: "Pagu definitif ini akan ditarik kembali dari database.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#1e293b',
+        confirmButtonText: 'Tarik Pagu!',
+        cancelButtonText: 'Batal'
+    }).then(r => {
+        if (r.isConfirmed) {
+            startLoading();
+            if (typeof google === 'undefined') {
+                endLoading();
+                loadData(null, true);
+            } else {
+                google.script.run
+                    .withSuccessHandler(res => {
+                        endLoading();
+                        if (res && res.success) {
+                            // Purge lokal langsung agar memori browser bersih seketika
+                            if (state.db && state.db.pagu) {
+                                state.db.pagu = state.db.pagu.filter(p => {
+                                    const itemVal = p.Item || p.Iter || '';
+                                    const bujpVal = p.BUJP || '';
+                                    const pKey4 = p.WK + '||' + bujpVal + '||' + p.Deskripsi + '||' + itemVal;
+                                    const pKey3 = p.WK + '||' + p.Deskripsi + '||' + itemVal;
+                                    return p.ID !== id && pKey4 !== id && pKey3 !== id;
+                                });
+                            }
+                            Swal.fire('Berhasil', res.message || 'Alokasi Pagu berhasil ditarik/dihapus.', 'success');
+                            loadData(null, true);
+                        } else {
+                            Swal.fire('Gagal', res ? res.message : 'Terjadi kesalahan saat menghapus Pagu.', 'error');
+                        }
+                    })
+                    .withFailureHandler(err => {
+                        endLoading();
+                        Swal.fire('Error', err.toString(), 'error');
+                    })
+                    .deleteMasterPagu(id, state.user);
+            }
+        }
+    });
+}
+
         
         function startClock() { setInterval(() => { const clock = document.getElementById('realtimeClock'); if (clock) clock.innerText = new Date().toLocaleString('id-ID'); }, 1000); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active-state'); }
